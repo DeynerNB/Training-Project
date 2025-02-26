@@ -1,10 +1,14 @@
 import { Button, Dialog, Grid } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 import { useContext } from "react";
-import { PlacesContext } from "../../context/PlacesContext.tsx/PlacesContext";
+import { GMapContext } from "../../context/GMapContext/GMapContext";
+import { PlacesContext } from "../../context/PlacesContext/PlacesContext";
 import useForm from "../../hooks/useForm";
+import useGoogleMarker from "../../hooks/useGoogleMarker";
 import type { IPlace } from "../../interfaces/Places.interface";
 import InputForm from "../Shared/InputForm/InputForm";
+
+import geoService from "../../services/Geoservice.service";
 
 function PlaceForm() {
 	const [placeName, inputNameValid, handleNameChnage] = useForm({
@@ -22,17 +26,37 @@ function PlaceForm() {
 		validationFunction: () => true,
 	});
 
+	const { addMarker } = useGoogleMarker();
+
 	const { addPlace } = useContext(PlacesContext);
 
+	const { gMap } = useContext(GMapContext);
+
 	const handleAddPlace = () => {
+		if (!gMap) {
+			console.error("Null reference: gMap");
+			return;
+		}
+
+		const lat = Number.parseFloat(placeLat);
+		const lng = Number.parseFloat(placeLng);
+
 		const placeData: IPlace = {
 			name: placeName,
-			lat: Number.parseFloat(placeLat),
-			lng: Number.parseFloat(placeLng),
+			lat,
+			lng,
 		};
 
-		console.log("Anadiendo");
 		addPlace(placeData);
+
+		addMarker(
+			{
+				map: gMap,
+				position: { lat, lng },
+				id: placeName,
+			},
+			geoService,
+		);
 	};
 
 	return (
