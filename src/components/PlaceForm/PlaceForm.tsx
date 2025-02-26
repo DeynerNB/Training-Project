@@ -1,7 +1,40 @@
-import { Box, Button, Dialog, Flex, Grid } from "@radix-ui/themes";
+import { Button, Dialog, Grid } from "@radix-ui/themes";
+import { Form } from "radix-ui";
+import { useContext } from "react";
+import { PlacesContext } from "../../context/PlacesContext.tsx/PlacesContext";
+import useForm from "../../hooks/useForm";
+import type { IPlace } from "../../interfaces/Places.interface";
 import InputForm from "../Shared/InputForm/InputForm";
 
 function PlaceForm() {
+	const [placeName, inputNameValid, handleNameChnage] = useForm({
+		initialValue: "Place Name",
+		validationFunction: () => true,
+	});
+
+	const [placeLat, inputLatValid, handleLatChnage] = useForm({
+		initialValue: "9.9947165",
+		validationFunction: () => false,
+	});
+
+	const [placeLng, inputLngValid, handleLngChnage] = useForm({
+		initialValue: "-84.1407853",
+		validationFunction: () => true,
+	});
+
+	const { addPlace } = useContext(PlacesContext);
+
+	const handleAddPlace = () => {
+		const placeData: IPlace = {
+			name: placeName,
+			lat: Number.parseFloat(placeLat),
+			lng: Number.parseFloat(placeLng),
+		};
+
+		console.log("Anadiendo");
+		addPlace(placeData);
+	};
+
 	return (
 		<Dialog.Root>
 			<Dialog.Trigger>
@@ -11,25 +44,59 @@ function PlaceForm() {
 			<Dialog.Content>
 				<Dialog.Title>Add place</Dialog.Title>
 
-				<Grid columns={"2"} gapX={"3"}>
-					<Box gridColumnStart={"1"} gridColumnEnd={"3"}>
-						<InputForm
-							inputLabel="Location Name"
-							inputId="location-name-input"
-						/>
-					</Box>
-					<InputForm inputLabel="Latitude" inputId="latitude-input" />
-					<InputForm inputLabel="longitude" inputId="longitude-input" />
-				</Grid>
+				<Form.Root>
+					{/* --> Input: Place Name */}
+					<Form.Field name="PlaceName">
+						<Form.Label>Name</Form.Label>
+						{/* <Form.Message>Please enter the name of the place.</Form.Message> */}
 
-				<Flex direction={"row-reverse"} gap={"3"}>
+						<Form.Control asChild>
+							<InputForm
+								inputId="location-name-input"
+								inputValue={placeName}
+								validState={inputNameValid}
+								handleInputChange={handleNameChnage}
+							/>
+						</Form.Control>
+					</Form.Field>
+
+					{/* --> Input: Lat and Lng */}
+					<Grid columns={"2"} gapX={"3"}>
+						<Form.Field name="LatitudeValue">
+							<Form.Label>Latitude</Form.Label>
+							{/* <Form.Message>Please enter the VALUE.</Form.Message> */}
+
+							<Form.Control asChild>
+								<InputForm
+									inputId="latitude-input"
+									inputValue={placeLat}
+									validState={inputLatValid}
+									handleInputChange={handleLatChnage}
+								/>
+							</Form.Control>
+						</Form.Field>
+						<Form.Field name="LongitudeValue">
+							<Form.Label>Longitude</Form.Label>
+							{/* <Form.Message>Please enter the VALUE.</Form.Message> */}
+
+							<Form.Control asChild>
+								<InputForm
+									inputId="longitude-input"
+									inputValue={placeLng}
+									validState={inputLngValid}
+									handleInputChange={handleLngChnage}
+								/>
+							</Form.Control>
+						</Form.Field>
+					</Grid>
+
+					{/* Submit place */}
 					<Dialog.Close>
-						<Button>Cancel</Button>
+						<Button type={"button"} onClick={handleAddPlace}>
+							Add place
+						</Button>
 					</Dialog.Close>
-					<Dialog.Close>
-						<Button>Save</Button>
-					</Dialog.Close>
-				</Flex>
+				</Form.Root>
 			</Dialog.Content>
 		</Dialog.Root>
 	);

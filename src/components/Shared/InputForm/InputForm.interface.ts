@@ -1,4 +1,6 @@
 export interface IInputFormProps {
-	inputLabel: string;
 	inputId: string;
+	inputValue: string;
+	validState: boolean;
+	handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
