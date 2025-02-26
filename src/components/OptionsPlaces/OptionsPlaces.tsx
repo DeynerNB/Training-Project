@@ -1,4 +1,5 @@
 import { Button, DropdownMenu, Flex, Grid, TextField } from "@radix-ui/themes";
+import PlaceForm from "../PlaceForm/PlaceForm";
 
 function OptionsPlaces() {
 	return (
@@ -23,7 +24,8 @@ function OptionsPlaces() {
 			</Grid>
 
 			{/* Button */}
-			<Button>Add place</Button>
+			{/* <Button>Add place</Button> */}
+			<PlaceForm />
 		</Flex>
 	);
 }
