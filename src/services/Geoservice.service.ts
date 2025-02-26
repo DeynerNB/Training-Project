@@ -1,6 +1,6 @@
 import type { IGeolocationCoordinates } from "../interfaces/Coordinates.interface";
 
-export default class GeoLocationService {
+export class GeoLocationService {
 	Map: typeof google.maps.Map | undefined;
 	InfoWindow: typeof google.maps.InfoWindow | undefined;
 	AdvancedMarkerElement:
@@ -64,3 +64,7 @@ export default class GeoLocationService {
 		});
 	}
 }
+
+const geoService = new GeoLocationService();
+
+export default geoService;
