@@ -1,0 +1,131 @@
+@use "./shared/animations.scss";
+@use "./shared/reset.scss";
+@use "./shared/variables.scss" as v;
+
+* {
+    font-family: "Montserrat", Arial, Helvetica, sans-serif;
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+    min-height: 100vh;
+}
+
+// --- Button styles
+.btn {
+    border-radius: 8px;
+    border: 2px solid v.$primary-color;
+    color: v.$primary-color;
+    background-color: transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.25s;
+
+    margin: 0.35rem 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+
+    &:hover {
+        // border-color: v.$secondary-color;
+        background-color: v.$secondary-color;
+        color: v.$white;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        background-color: v.$disable-primary-color;
+        border-color: v.$disable-secondary-color;
+        color: v.$white;
+    }
+}
+
+.btn--vertical {
+    flex-direction: column;
+}
+
+.btn--full {
+    width: 100%;
+}
+
+.btn__group {
+    display: flex;
+    gap: 1rem;
+}
+
+// --- Input text styles
+.input-text {
+    border-radius: 5px;
+    border: 1px solid #646cff;
+    padding: 0.5em 0.6em;
+    margin-top: 0.3em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.input-text--full {
+    width: 100%;
+}
+
+.input-text--wrong {
+    border: 1px solid red;
+}
+
+// --- Badge style
+.badge {
+    margin: 0.3rem 0;
+    padding: 0.7rem 1rem;
+
+    border: 2px solid v.$primary-color;
+    border-radius: 0.3rem;
+    color: v.$primary-color;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+}
+
+// --- Icon style
+.icon {
+    // color: v.$icon-danger;
+    color: v.$primary-color;
+    user-select: none;
+}
+
+.icon__hover {
+    cursor: pointer;
+    transition: color 0.25s;
+
+    &:hover {
+        color: v.$icon-danger-secondary;
+    }
+}
+
+// --- Alert style
+.alert {
+    width: 100%;
+    background-color: v.$danger-lighter;
+    outline: 1px solid v.$danger;
+    color: v.$danger;
+
+    text-align: center;
+
+    padding: 0.4rem 1rem;
+    border-radius: 0.3rem;
+
+    position: absolute;
+    bottom: 0;
+}

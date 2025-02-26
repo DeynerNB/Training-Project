@@ -1,0 +1,32 @@
+@use "../../styles/shared/variables.scss" as v;
+
+.form {
+    display: grid;
+    gap: 1rem;
+
+    position: relative;
+
+    padding: 1.5rem 1.3rem;
+    outline: 2px solid v.$secondary-color;
+    border-radius: 12px;
+
+    margin-bottom: 1rem;
+}
+
+.form__header {
+    text-align: center;
+}
+
+.form__input {
+    width: 100%;
+}
+
+.form-container {
+    display: grid;
+    gap: 1rem;
+}
+
+.form__group {
+    display: flex;
+    gap: 1rem;
+}

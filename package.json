@@ -1,0 +1,41 @@
+{
+	"name": "workshop",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc -b && vite build",
+		"lint": "biome check ./src",
+		"format": "biome check --write ./src",
+		"preview": "vite preview",
+		"prepare": "husky install",
+		"create-comp": "./create-comp.sh"
+	},
+	"dependencies": {
+		"@radix-ui/themes": "^3.2.0",
+		"@types/google.maps": "^3.58.1",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"sass": "^1.85.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@eslint/js": "^9.19.0",
+		"@types/react": "^19.0.8",
+		"@types/react-dom": "^19.0.3",
+		"@vitejs/plugin-react": "^4.3.4",
+		"eslint": "^9.19.0",
+		"eslint-plugin-react-hooks": "^5.0.0",
+		"eslint-plugin-react-refresh": "^0.4.18",
+		"globals": "^15.14.0",
+		"husky": "^8.0.0",
+		"lint-staged": "^15.4.3",
+		"typescript": "~5.7.2",
+		"typescript-eslint": "^8.22.0",
+		"vite": "^6.1.0"
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx}": ["biome check --write --no-errors-on-unmatched"]
+	}
+}

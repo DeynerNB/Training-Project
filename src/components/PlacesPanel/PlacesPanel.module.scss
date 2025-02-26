@@ -1,0 +1,5 @@
+@use "../../styles/shared/variables" as v;
+
+.container-title {
+    background-color: v.$primary-color;
+}

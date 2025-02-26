@@ -1,0 +1,62 @@
+@use "../../styles/shared/variables.scss" as v;
+
+table,
+tr {
+    border-collapse: collapse;
+
+}
+
+tr:nth-child(even) {
+    background-color: v.$secondary-color;
+}
+
+.table {
+    width: 100%;
+    border: 1px solid v.$primary-color-darker;
+}
+
+.table__header {
+    background-color: v.$primary-color-darker;
+    color: v.$white;
+}
+
+.table__row:first-child {
+    column-span: 2;
+}
+
+.table__cell--hover {
+
+    transition: color 0.25s;
+
+    &:hover {
+        user-select: none;
+        cursor: pointer;
+
+        color: v.$primary-color;
+    }
+}
+
+.table__cell__header {
+    padding: 0.7rem;
+}
+
+.table__cell {
+    padding: 0.5rem;
+
+    // border-bottom: 2px solid v.$primary-color;
+}
+
+.table__cell {
+    &:nth-child(odd) {
+        width: 100%;
+    }
+
+    &:nth-child(even) {
+        text-align: center;
+    }
+}
+
+.table-container {
+    overflow-y: scroll;
+    max-height: 300px;
+}
