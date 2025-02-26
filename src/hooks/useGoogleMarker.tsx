@@ -1,19 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type {
 	ICreateMarker,
 	IMarkerListItem,
 } from "../interfaces/Marker.interface";
-import type GeoLocationService from "../services/Geoservice.service";
+import type { GeoLocationService } from "../services/Geoservice.service";
 import type { T_GoogleInfoWindow } from "../types/Google.types";
 
 const useGoogleMarker = () => {
 	const activeMarker = useRef<T_GoogleInfoWindow>(null);
 
 	const [markersList, setMarkersList] = useState<IMarkerListItem[]>([]);
-
-	useEffect(() => {
-		console.log("DEBUG", markersList);
-	}, [markersList]);
 
 	// --> Create a marker in a specific position and add it to the map
 	const addMarker = (
@@ -24,6 +20,7 @@ const useGoogleMarker = () => {
 		const InfoWindow = geolocationService.getInfoWindow();
 
 		if (!Marker || !InfoWindow) {
+			console.error("Null reference: Marker or InfoWindow");
 			return;
 		}
 
@@ -63,7 +60,7 @@ const useGoogleMarker = () => {
 		setMarkersList(markersList.filter((marker) => marker.id !== markerId));
 	};
 
-	return { markersList, addMarker, removeMarker };
+	return { addMarker, removeMarker };
 };
 
 export default useGoogleMarker;
