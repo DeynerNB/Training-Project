@@ -46,8 +46,6 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 			lng,
 		};
 
-		console.log("moviendono", placeData);
-
 		addPlaceToMap(placeData);
 	};
 

@@ -1,5 +1,5 @@
-import { Crosshair2Icon } from "@radix-ui/react-icons";
-import { Box, Button, Dialog, Grid } from "@radix-ui/themes";
+import { Crosshair2Icon, RulerHorizontalIcon } from "@radix-ui/react-icons";
+import { Box, Button, Dialog, Flex, Grid, IconButton } from "@radix-ui/themes";
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { GMapContext } from "../../context/GMapContext/GMapContext";
@@ -12,6 +12,10 @@ import type {
 } from "../../interfaces/Coordinates.interface";
 
 import geoService from "../../services/Geoservice.service";
+import type {
+	T_GoogleDistanceMatrix,
+	T_GooglePolyline,
+} from "../../types/Google.types";
 import DialogForm from "../Shared/DialogForm/DialogForm";
 import style from "./GoogleMap.module.scss";
 
@@ -20,6 +24,8 @@ function GoogleMap() {
 
 	// -- Hooks variables
 	const [openPlaceForm, setOpenPlaceForm] = useState(false);
+
+	const [userCoordinates, setUserCoordinates] = useState<ICoordinates>();
 
 	const [selectionCoord, setSelectionCoord] = useState<ICoordinates>({
 		lat: 0,
@@ -34,8 +40,13 @@ function GoogleMap() {
 	// -- Ref hooks variables
 	const mapDivRef = useRef<HTMLDivElement>(null);
 
+	const mapPolylineRef = useRef<T_GooglePolyline>(null);
+
+	const mapDistanceMatrixRef = useRef<T_GoogleDistanceMatrix>(null);
+
 	// --- Context variables
-	const { gMap, setGMap, addPlaceToMap } = useContext(GMapContext);
+	const { gMap, selectedMarkers, setGMap, addPlaceToMap, createInfoWindow } =
+		useContext(GMapContext);
 
 	useEffect(() => {
 		if (googleMapsScriptLoaded) {
@@ -81,9 +92,17 @@ function GoogleMap() {
 		);
 
 		setGMap(googleMapObj);
+
+		mapPolylineRef.current = new google.maps.Polyline({ geodesic: true });
+		mapDistanceMatrixRef.current = new google.maps.DistanceMatrixService();
 	};
 
 	const handleMyLocation = async () => {
+		if (userCoordinates) {
+			gMap?.panTo(userCoordinates);
+			return;
+		}
+
 		const coordsRaw = getStorageValue();
 		let coords: ICoordinates | null = null;
 
@@ -104,11 +123,76 @@ function GoogleMap() {
 			return;
 		}
 
+		setUserCoordinates(coords);
+
 		addPlaceToMap({
 			lat: coords.lat,
 			lng: coords.lng,
 			name: "Your position",
 		});
+	};
+
+	const handleDistanceCalculation = async () => {
+		if (
+			!selectedMarkers ||
+			!mapPolylineRef.current ||
+			!mapDistanceMatrixRef.current
+		) {
+			console.log("No markers are selected");
+			return;
+		}
+		if (selectedMarkers.current.length < 2) {
+			console.log("No enough markers are selected");
+			return;
+		}
+		mapPolylineRef.current.setMap(null);
+
+		const markers = selectedMarkers.current;
+
+		const firstPosition = markers[0].position as google.maps.LatLngLiteral;
+		const secondPosition = markers[1].position as google.maps.LatLngLiteral;
+
+		if (!firstPosition || !secondPosition) {
+			console.log("Error raro");
+			return;
+		}
+
+		const coords = [
+			{ lat: firstPosition.lat, lng: firstPosition.lng },
+			{ lat: secondPosition.lat, lng: secondPosition.lng },
+		];
+
+		const origin = new google.maps.LatLng(firstPosition.lat, firstPosition.lng);
+		const destination = new google.maps.LatLng(
+			secondPosition.lat,
+			secondPosition.lng,
+		);
+
+		const distanceConfig: google.maps.DistanceMatrixRequest = {
+			destinations: [origin],
+			origins: [destination],
+			travelMode: google.maps.TravelMode.DRIVING,
+		};
+
+		mapDistanceMatrixRef.current.getDistanceMatrix(
+			distanceConfig,
+			(response, status) => {
+				if (status === google.maps.DistanceMatrixStatus.OK && response) {
+					const { distance, duration } = response.rows[0].elements[0];
+
+					const distanceText = distance.text;
+					const durationText = duration.text;
+
+					createInfoWindow(
+						markers[0],
+						`Distance: ${distanceText}<br/>Duration: ${durationText}`,
+					);
+				}
+			},
+		);
+
+		mapPolylineRef.current.setPath(coords);
+		mapPolylineRef.current.setMap(gMap);
 	};
 
 	return (
@@ -122,11 +206,14 @@ function GoogleMap() {
 				>
 					<Button onClick={loadGMaps}>Load Google Maps</Button>
 				</Box>
-				<Box position={"absolute"} bottom={"5"} right={"9"}>
-					<Button onClick={handleMyLocation}>
-						<Crosshair2Icon />{" "}
-					</Button>
-				</Box>
+				<Flex position={"absolute"} bottom={"5"} right={"9"} gap={"2"}>
+					<IconButton size={"3"} onClick={handleDistanceCalculation}>
+						<RulerHorizontalIcon />
+					</IconButton>
+					<IconButton size={"3"} onClick={handleMyLocation}>
+						<Crosshair2Icon />
+					</IconButton>
+				</Flex>
 			</Box>
 
 			<DialogForm

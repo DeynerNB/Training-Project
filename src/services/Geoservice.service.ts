@@ -6,6 +6,7 @@ export class GeoLocationService {
 	AdvancedMarkerElement:
 		| typeof google.maps.marker.AdvancedMarkerElement
 		| undefined;
+	PinElement: typeof google.maps.marker.PinElement | undefined;
 	Place: typeof google.maps.places.Place | undefined;
 	Geocoder: google.maps.Geocoder | undefined;
 
@@ -18,9 +19,10 @@ export class GeoLocationService {
 		const { InfoWindow } = mapsLibrary;
 		const Geocoder = new window.google.maps.Geocoder();
 
-		const { AdvancedMarkerElement } = (await window.google.maps.importLibrary(
-			"marker",
-		)) as google.maps.MarkerLibrary;
+		const { AdvancedMarkerElement, PinElement } =
+			(await window.google.maps.importLibrary(
+				"marker",
+			)) as google.maps.MarkerLibrary;
 
 		const { Place } = (await window.google.maps.importLibrary(
 			"places",
@@ -29,6 +31,7 @@ export class GeoLocationService {
 		this.Map = MapElement;
 		this.InfoWindow = InfoWindow;
 		this.AdvancedMarkerElement = AdvancedMarkerElement;
+		this.PinElement = PinElement;
 		this.Place = Place;
 		this.Geocoder = Geocoder;
 	}
@@ -43,6 +46,10 @@ export class GeoLocationService {
 
 	getPlaceObject() {
 		return this.Place;
+	}
+
+	getPinElement() {
+		return this.PinElement;
 	}
 
 	getGeocoder() {

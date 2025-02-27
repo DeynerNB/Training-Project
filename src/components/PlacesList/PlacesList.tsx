@@ -8,16 +8,12 @@ import type { IPlace } from "../../interfaces/Places.interface";
 function PlacesList() {
 	const { placesList, removePlaceFromMap } = useContext(GMapContext);
 
-	useEffect(() => {
-		console.log("fiesta", placesList);
-	}, [placesList]);
-
 	const handleRemovePlace = (markerId: string) => {
 		removePlaceFromMap(markerId);
 	};
 
 	return (
-		<Box p={"3"}>
+		<Box p={"3"} overflowY={"scroll"}>
 			{placesList.map((place: IPlace) => {
 				return (
 					<PlaceCard

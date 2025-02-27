@@ -3,6 +3,8 @@ import type { ICoordinates } from "./Coordinates.interface";
 
 export interface IPlaceData extends ICoordinates {
 	name: string;
+	description?: string;
+	images?: string[];
 }
 
 export interface IPlace extends IPlaceData {
