@@ -1,37 +1,41 @@
-import { Box, Button, Container } from "@radix-ui/themes";
-import { useContext, useEffect, useRef } from "react";
-import style from "./GoogleMap.module.scss";
-
 import { Crosshair2Icon } from "@radix-ui/react-icons";
+import { Box, Button, Dialog, Grid } from "@radix-ui/themes";
+import { useContext, useEffect, useRef, useState } from "react";
+
 import { GMapContext } from "../../context/GMapContext/GMapContext";
 import useGoogleMapsScript from "../../hooks/useGoogleMapsScript";
-import useGoogleMarker from "../../hooks/useGoogleMarker";
 import useLocalStorage from "../../hooks/useLocalStorage";
+
 import type {
 	ICoordinates,
 	IGeolocationCoordinates,
 } from "../../interfaces/Coordinates.interface";
+
 import geoService from "../../services/Geoservice.service";
-import type { T_GoogleMap } from "../../types/Google.types";
+import DialogForm from "../Shared/DialogForm/DialogForm";
+import style from "./GoogleMap.module.scss";
 
 function GoogleMap() {
 	const storageKey = "user-coordinates";
 
+	// -- Hooks variables
+	const [openPlaceForm, setOpenPlaceForm] = useState(false);
+
+	const [selectionCoord, setSelectionCoord] = useState<ICoordinates>({
+		lat: 0,
+		lng: 0,
+	});
+
 	// -- Custom hooks variables
-	const { getStorageValue, writeStorageValue } = useLocalStorage(storageKey);
+	const { getStorageValue } = useLocalStorage(storageKey);
 
 	const { googleMapsScriptLoaded, loadGoogleSripts } = useGoogleMapsScript();
-
-	const { addMarker, removeMarker } = useGoogleMarker();
 
 	// -- Ref hooks variables
 	const mapDivRef = useRef<HTMLDivElement>(null);
 
-	const googleMapRef = useRef<T_GoogleMap>(null);
-
 	// --- Context variables
-
-	const { gMap, setGMap } = useContext(GMapContext);
+	const { gMap, setGMap, addPlaceToMap } = useContext(GMapContext);
 
 	useEffect(() => {
 		if (googleMapsScriptLoaded) {
@@ -60,14 +64,28 @@ function GoogleMap() {
 			mapId: "Mapa Proyecto",
 		});
 
+		googleMapObj.addListener(
+			"click",
+			(mapsMouseEvent: google.maps.MapMouseEvent) => {
+				const lat = mapsMouseEvent.latLng?.lat();
+				const lng = mapsMouseEvent.latLng?.lng();
+
+				if (!lat || !lng) {
+					console.error("Null reference: lat or lng");
+					return;
+				}
+
+				setSelectionCoord({ lat, lng });
+				setOpenPlaceForm(true);
+			},
+		);
+
 		setGMap(googleMapObj);
 	};
 
 	const handleMyLocation = async () => {
 		const coordsRaw = getStorageValue();
 		let coords: ICoordinates | null = null;
-
-		console.log(gMap);
 
 		if (!coordsRaw) {
 			const { latitude, longitude }: IGeolocationCoordinates =
@@ -81,39 +99,42 @@ function GoogleMap() {
 			coords = JSON.parse(coordsRaw);
 		}
 
-		console.log("Antes de 92");
 		if (!gMap || !coords) {
 			console.error("Null reference: gMap or coords");
 			return;
 		}
-		console.log("Desp de 92");
 
-		addMarker(
-			{
-				map: gMap,
-				position: coords,
-				id: "Your position",
-			},
-			geoService,
-		);
+		addPlaceToMap({
+			lat: coords.lat,
+			lng: coords.lng,
+			name: "Your position",
+		});
 	};
 
 	return (
-		<Box position={"relative"}>
-			<Box
-				as={"div"}
-				height={"100%"}
-				ref={mapDivRef}
-				className={style["map-container"]}
-			>
-				<Button onClick={loadGMaps}>Load Google Maps</Button>
+		<>
+			<Box position={"relative"} p={"3"}>
+				<Box
+					as={"div"}
+					height={"100%"}
+					ref={mapDivRef}
+					className={style["map-container"]}
+				>
+					<Button onClick={loadGMaps}>Load Google Maps</Button>
+				</Box>
+				<Box position={"absolute"} bottom={"5"} right={"9"}>
+					<Button onClick={handleMyLocation}>
+						<Crosshair2Icon />{" "}
+					</Button>
+				</Box>
 			</Box>
-			<Box position={"absolute"} bottom={"5"} right={"9"}>
-				<Button onClick={handleMyLocation}>
-					<Crosshair2Icon />{" "}
-				</Button>
-			</Box>
-		</Box>
+
+			<DialogForm
+				openPlaceForm={openPlaceForm}
+				setOpenPlaceForm={setOpenPlaceForm}
+				coords={selectionCoord}
+			/>
+		</>
 	);
 }
 

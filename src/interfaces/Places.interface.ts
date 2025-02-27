@@ -1,9 +1,8 @@
 import type { T_GoogleAdvMarker } from "../types/Google.types";
+import type { ICoordinates } from "./Coordinates.interface";
 
-export interface IPlaceData {
+export interface IPlaceData extends ICoordinates {
 	name: string;
-	lat: number;
-	lng: number;
 }
 
 export interface IPlace extends IPlaceData {

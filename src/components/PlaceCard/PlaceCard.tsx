@@ -1,8 +1,9 @@
-import { Avatar, Box, Card, Flex, Inset, Text } from "@radix-ui/themes";
+import { TrashIcon } from "@radix-ui/react-icons";
+import { Avatar, Box, Button, Card, Flex, Inset, Text } from "@radix-ui/themes";
 import type { IPlaceCard } from "./PlaceCard.interface";
 
 function PlaceCard(props: IPlaceCard) {
-	const { placeData } = props;
+	const { placeData, handleRemovePlace } = props;
 
 	return (
 		<Card>
@@ -16,13 +17,22 @@ function PlaceCard(props: IPlaceCard) {
 			<Text as="div" size="2" weight="bold">
 				{placeData.name}
 			</Text>
-			<Flex>
+			<Flex gap={"3"}>
 				<Text as="div" size="2">
 					Latitude: {placeData.lat}
 				</Text>
 				<Text as="div" size="2">
 					Longitud: {placeData.lng}
 				</Text>
+			</Flex>
+			<Flex justify={"end"}>
+				<Button
+					variant={"ghost"}
+					mt={"2"}
+					onClick={() => handleRemovePlace(placeData.name)}
+				>
+					<TrashIcon color={"red"} />
+				</Button>
 			</Flex>
 		</Card>
 	);

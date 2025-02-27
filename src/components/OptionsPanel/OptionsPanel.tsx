@@ -6,18 +6,12 @@ import {
 	Text,
 	TextField,
 } from "@radix-ui/themes";
-import PlaceForm from "../PlaceForm/PlaceForm";
 
 import style from "./OptionsPanel.module.scss";
 
 function OptionsPanel() {
 	return (
 		<Flex direction={"column"} p={"3"} gap={"6"}>
-			{/* Add a new location */}
-			<PlaceForm />
-
-			<Separator orientation={"horizontal"} size={"4"} />
-
 			{/* Other filters */}
 			{/* Text input */}
 			<Flex direction={"column"} gap={"3"}>

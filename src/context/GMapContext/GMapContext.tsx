@@ -1,4 +1,4 @@
-import { createContext, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 
 import type { IPlace, IPlaceData } from "../../interfaces/Places.interface";
 import type { T_GoogleInfoWindow, T_GoogleMap } from "../../types/Google.types";
@@ -47,6 +47,10 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 		removeMarker(placeName);
 	};
 
+	useEffect(() => {
+		console.log("actualizao pa", gMap);
+	}, [gMap]);
+
 	// --> Create a marker in a specific position and add it to the map
 	const createMarker = ({ name, lat, lng }: IPlaceData) => {
 		const Marker = geoService.getAdvancedMarker();
@@ -64,6 +68,8 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 			title: name,
 			gmpClickable: true,
 		});
+
+		gMap?.panTo({ lat, lng });
 
 		marker.addEventListener("gmp-click", () => {
 			if (activeMarker.current) {
