@@ -1,16 +1,27 @@
-import { Avatar, Box, Card, Flex, Text } from "@radix-ui/themes";
+import { Box } from "@radix-ui/themes";
 import { useContext } from "react";
-import { PlacesContext } from "../../context/PlacesContext/PlacesContext";
-import type { IPlace } from "../../interfaces/Places.interface";
 import PlaceCard from "../PlaceCard/PlaceCard";
 
+import { GMapContext } from "../../context/GMapContext/GMapContext";
+import type { IPlace } from "../../interfaces/Places.interface";
+
 function PlacesList() {
-	const { placesList } = useContext(PlacesContext);
+	const { placesList, removePlaceFromMap } = useContext(GMapContext);
+
+	const handleRemovePlace = (markerId: string) => {
+		removePlaceFromMap(markerId);
+	};
 
 	return (
-		<Box>
+		<Box py={"3"}>
 			{placesList.map((place: IPlace) => {
-				return <PlaceCard key={place.name} placeData={place} />;
+				return (
+					<PlaceCard
+						key={place.name}
+						placeData={place}
+						handleRemovePlace={handleRemovePlace}
+					/>
+				);
 			})}
 		</Box>
 	);
