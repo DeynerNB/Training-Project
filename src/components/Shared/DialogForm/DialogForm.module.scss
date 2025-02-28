@@ -7,3 +7,10 @@
     user-select: none;
     display: block;
 }
+
+.label--required {
+    &::after {
+        content: "*";
+        color: v.$danger;
+    }
+}

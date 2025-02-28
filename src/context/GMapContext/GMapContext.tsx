@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useRef, useState } from "react";
 
 import type { IPlace, IPlaceData } from "../../interfaces/Places.interface";
 import type {
@@ -34,7 +34,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 	const selectedMarkers = useRef<T_GoogleAdvMarker[]>([]);
 
 	const addPlaceToMap = (placeData: IPlaceData) => {
-		const { name, lat, lng } = placeData;
+		const { name, lat, lng, description, images } = placeData;
 
 		const marker = createMarker({ name, lat, lng });
 
@@ -44,6 +44,8 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 				name,
 				lat,
 				lng,
+				description,
+				images,
 				marker,
 			},
 		]);
