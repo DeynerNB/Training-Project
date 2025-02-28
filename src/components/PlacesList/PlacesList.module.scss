@@ -1,0 +1,7 @@
+@use "../../styles/shared/variables" as v;
+
+.container-no-places-yet {
+    border: 2px dashed v.$primary-color;
+    border-radius: 0.4rem;
+    color: v.$primary-color;
+}
