@@ -1,4 +1,4 @@
-import { Box } from "@radix-ui/themes";
+import { Box, Grid } from "@radix-ui/themes";
 import { useContext, useEffect } from "react";
 import PlaceCard from "../PlaceCard/PlaceCard";
 
@@ -13,7 +13,12 @@ function PlacesList() {
 	};
 
 	return (
-		<Box p={"3"} overflowY={"scroll"}>
+		<Grid
+			p={"3"}
+			gap={"3"}
+			overflowY={"scroll"}
+			rows={"repeat(auto-fill, 300px)"}
+		>
 			{placesList.map((place: IPlace) => {
 				return (
 					<PlaceCard
@@ -23,7 +28,7 @@ function PlacesList() {
 					/>
 				);
 			})}
-		</Box>
+		</Grid>
 	);
 }
 

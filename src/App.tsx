@@ -10,14 +10,16 @@ function App() {
 			<Grid
 				width={"100vw"}
 				height={"100vh"}
-				columns={{ initial: "1", sm: "1fr 1fr 2fr" }}
+				columns={{ initial: "1", sm: "1fr 3fr" }}
 				rows={{ initial: "2", sm: "1" }}
 			>
-				{/* Options panel */}
-				<OptionPanel />
+				<Grid minWidth={"300px"} rows={"min-content 1fr"}>
+					{/* Options panel */}
+					<OptionPanel />
 
-				{/* My places component */}
-				<PlacesList />
+					{/* My places component */}
+					<PlacesList />
+				</Grid>
 
 				{/* Google map component */}
 				<GoogleMap />
