@@ -17,7 +17,7 @@ function PlacesList() {
 	return (
 		<>
 			{placesList.length === 0 ? (
-				<Box p={"3"}>
+				<Box>
 					<Flex
 						p={"3"}
 						height={"100%"}

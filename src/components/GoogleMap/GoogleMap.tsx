@@ -1,5 +1,5 @@
 import { Crosshair2Icon, RulerHorizontalIcon } from "@radix-ui/react-icons";
-import { Box, Button, Dialog, Flex, Grid, IconButton } from "@radix-ui/themes";
+import { Box, Button, Flex, IconButton } from "@radix-ui/themes";
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { GMapContext } from "../../context/GMapContext/GMapContext";
@@ -17,7 +17,6 @@ import type {
 	T_GooglePolyline,
 } from "../../types/Google.types";
 import DialogForm from "../Shared/DialogForm/DialogForm";
-import style from "./GoogleMap.module.scss";
 
 function GoogleMap() {
 	const storageKey = "user-coordinates";
@@ -197,30 +196,31 @@ function GoogleMap() {
 
 	return (
 		<>
-			<Box position={"relative"} p={"3"}>
-				<Box
-					as={"div"}
-					height={"100%"}
-					ref={mapDivRef}
-					className={style["map-container"]}
-				>
-					<Button onClick={loadGMaps}>Load Google Maps</Button>
-				</Box>
-				<Flex position={"absolute"} bottom={"5"} right={"9"} gap={"2"}>
-					<IconButton size={"3"} onClick={handleDistanceCalculation}>
-						<RulerHorizontalIcon />
-					</IconButton>
-					<IconButton size={"3"} onClick={handleMyLocation}>
-						<Crosshair2Icon />
-					</IconButton>
-				</Flex>
-			</Box>
+			{googleMapsScriptLoaded ? (
+				<>
+					<Box position={"relative"}>
+						<Box as={"div"} height={"100%"} ref={mapDivRef} />
+						<Flex position={"absolute"} bottom={"6"} right={"9"} gap={"2"}>
+							<IconButton size={"3"} onClick={handleDistanceCalculation}>
+								<RulerHorizontalIcon />
+							</IconButton>
+							<IconButton size={"3"} onClick={handleMyLocation}>
+								<Crosshair2Icon />
+							</IconButton>
+						</Flex>
+					</Box>
 
-			<DialogForm
-				openPlaceForm={openPlaceForm}
-				setOpenPlaceForm={setOpenPlaceForm}
-				coords={selectionCoord}
-			/>
+					<DialogForm
+						openPlaceForm={openPlaceForm}
+						setOpenPlaceForm={setOpenPlaceForm}
+						coords={selectionCoord}
+					/>
+				</>
+			) : (
+				<Flex justify={"center"} align={"center"}>
+					<Button onClick={loadGMaps}>Load Google Maps</Button>
+				</Flex>
+			)}
 		</>
 	);
 }

@@ -13,7 +13,7 @@ function App() {
 				columns={{ initial: "1", sm: "1fr 3fr" }}
 				rows={{ initial: "2", sm: "1" }}
 			>
-				<Grid minWidth={"300px"} rows={"min-content 1fr"}>
+				<Grid minWidth={"300px"} rows={"min-content 1fr"} p={"3"}>
 					{/* Options panel */}
 					<OptionPanel />
 
