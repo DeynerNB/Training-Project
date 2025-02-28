@@ -2,10 +2,15 @@ import { TrashIcon } from "@radix-ui/react-icons";
 import { Box, Card, Flex, IconButton, Inset, Text } from "@radix-ui/themes";
 import type { IPlaceCard } from "./PlaceCard.interface";
 
+import { useEffect } from "react";
 import defaultPlaceImage from "../../assets/DefaultPlaceImage.jpg";
 
 function PlaceCard(props: IPlaceCard) {
 	const { placeData, handleRemovePlace } = props;
+
+	useEffect(() => {
+		console.log("placeData: ", placeData);
+	}, [placeData]);
 
 	return (
 		<Box maxHeight={"300px"} maxWidth={"100%"}>
@@ -13,7 +18,7 @@ function PlaceCard(props: IPlaceCard) {
 				<Flex direction={"column"} height={"100%"}>
 					<Inset clip="padding-box" side="top" pb="current">
 						<img
-							src={defaultPlaceImage}
+							src={placeData?.images?.[0] || defaultPlaceImage}
 							alt="Bold typography"
 							style={{
 								display: "block",
