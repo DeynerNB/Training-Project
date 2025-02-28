@@ -8,25 +8,28 @@ import {
 } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 import { useContext, useEffect, useState } from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
 
 import { GMapContext } from "../../../context/GMapContext/GMapContext";
 
-import { type SubmitHandler, useForm } from "react-hook-form";
 import type { IPlaceData } from "../../../interfaces/Places.interface";
+import {
+	E_Categories,
+	E_amenities,
+	E_type,
+} from "../../../utils/FiltersOptions.util";
+import type { Inputs } from "./DialogForm.interface";
 import type { IDialogForm } from "./DialogForm.interface";
 
+import CheckboxCategory from "../CheckboxCategory/CheckboxCategory";
+import SelectCategory from "../SelectCategory/SelectCategory";
 import style from "./DialogForm.module.scss";
 
-// Define the inputs and their types
-type Inputs = {
-	name: string;
-	lat: string;
-	lng: string;
-	description: string;
-	imageURL: string;
-};
-
 function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
+	// Regex to validate the lat and lng values
+	const inputRegexPattern = /^-?\d+(\.\d+)?$/i;
+
+	// React Hook Form variables
 	const {
 		register,
 		handleSubmit,
@@ -34,35 +37,43 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 		setValue,
 		clearErrors,
 		formState: { errors },
+		control,
 	} = useForm<Inputs>();
 
+	// Function to add a new place to the map
 	const { addPlaceToMap } = useContext(GMapContext);
 
+	// Variables to store all images url uploaded
 	const [placeImagesURLs, setPlaceImagesURLs] = useState<string[]>([]);
 
+	// Variable to store all selected amenities
+	const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+
+	// Initialize the input default values
 	useEffect(() => {
+		setValue("placeName", "");
 		setValue("lat", coords.lat.toFixed(7));
 		setValue("lng", coords.lng.toFixed(7));
 	}, [coords, setValue]);
 
-	// Validate the lat and lng input
-	const inputRegexPattern = /^-?\d+(\.\d+)?$/i;
-
 	// Handle the place information to be added
 	const onSubmit: SubmitHandler<Inputs> = (data) => {
-		const { name, lat, lng, description } = data;
+		const { placeName, lat, lng, description, categoryType } = data;
 
 		const placeData: IPlaceData = {
-			name,
+			name: placeName,
 			lat: Number.parseFloat(lat),
 			lng: Number.parseFloat(lng),
 			description,
 			images: [...placeImagesURLs],
+			category_type: categoryType,
+			category_ammenities: [...selectedAmenities],
 		};
 		addPlaceToMap(placeData);
 		setOpenPlaceForm(false);
 	};
 
+	// Handle the image input
 	const handleAddImageURL = () => {
 		const imageURL = getValues("imageURL");
 
@@ -75,7 +86,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 		<Dialog.Root
 			open={openPlaceForm}
 			onOpenChange={() => {
-				clearErrors("name");
+				clearErrors("placeName");
 				clearErrors("lat");
 				clearErrors("lng");
 
@@ -98,7 +109,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 									Name
 								</Form.Label>
 								{/* Error message when name is not provided */}
-								{errors.name && (
+								{errors.placeName && (
 									<Form.Message className={style["label--invalid"]}>
 										Please enter the name of the place.
 									</Form.Message>
@@ -106,7 +117,9 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 							</Flex>
 
 							<Form.Control asChild>
-								<TextField.Root {...register("name", { required: true })} />
+								<TextField.Root
+									{...register("placeName", { required: true })}
+								/>
 							</Form.Control>
 						</Form.Field>
 
@@ -193,6 +206,22 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 								</Button>
 							</Flex>
 						</Form.Field>
+
+						{/* --> Input: Place categories */}
+						<SelectCategory
+							labelValue="Place type"
+							filter_title={E_Categories.categoryType}
+							filter_options={E_type}
+							control={control}
+						/>
+
+						<CheckboxCategory
+							labelValue="Amenities"
+							filterTitle={E_Categories.categoryAmenities}
+							filterOptions={E_amenities}
+							selectedAmenities={selectedAmenities}
+							setSelectedAmenities={setSelectedAmenities}
+						/>
 					</Grid>
 
 					{/* --> Images Grid */}

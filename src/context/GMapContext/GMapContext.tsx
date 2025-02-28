@@ -34,7 +34,15 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 	const selectedMarkers = useRef<T_GoogleAdvMarker[]>([]);
 
 	const addPlaceToMap = (placeData: IPlaceData) => {
-		const { name, lat, lng, description, images } = placeData;
+		const {
+			name,
+			lat,
+			lng,
+			description,
+			images,
+			category_type,
+			category_ammenities,
+		} = placeData;
 
 		const marker = createMarker({ name, lat, lng });
 
@@ -47,6 +55,8 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 				description,
 				images,
 				marker,
+				category_type,
+				category_ammenities,
 			},
 		]);
 	};

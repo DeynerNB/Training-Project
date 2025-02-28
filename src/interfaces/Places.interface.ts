@@ -5,6 +5,8 @@ export interface IPlaceData extends ICoordinates {
 	name: string;
 	description?: string;
 	images?: string[];
+	category_type?: string;
+	category_ammenities?: string[];
 }
 
 export interface IPlace extends IPlaceData {
