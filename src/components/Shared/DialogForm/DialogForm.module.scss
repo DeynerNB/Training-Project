@@ -1,0 +1,9 @@
+@use "../../../styles/shared/variables" as v;
+
+.label--invalid {
+    color: v.$danger;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    user-select: none;
+    display: block;
+}

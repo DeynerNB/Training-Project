@@ -1,14 +1,16 @@
-import { Button, Dialog, Flex, Grid, Text, TextField } from "@radix-ui/themes";
+import { Button, Dialog, Flex, Grid, TextField } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 import { useContext, useEffect } from "react";
+
 import { GMapContext } from "../../../context/GMapContext/GMapContext";
-// import useForm from "../../../hooks/useForm";
-import type { IPlaceData } from "../../../interfaces/Places.interface";
-import InputForm from "../../Shared/InputForm/InputForm";
-import type { IDialogForm } from "./DialogForm.interface";
 
 import { type SubmitHandler, useForm } from "react-hook-form";
+import type { IPlaceData } from "../../../interfaces/Places.interface";
+import type { IDialogForm } from "./DialogForm.interface";
 
+import style from "./DialogForm.module.scss";
+
+// Define the inputs and their types
 type Inputs = {
 	name: string;
 	lat: string;
@@ -19,23 +21,10 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 	const {
 		register,
 		handleSubmit,
-		watch,
 		setValue,
-		formState: { errors, dirtyFields },
-	} = useForm<Inputs>({
-		defaultValues: {
-			lat: coords.lat.toFixed(7),
-			lng: coords.lng.toFixed(7),
-		},
-	});
-	console.log("dirtyFields: ", dirtyFields);
-	console.log("errors: ", errors);
-	// const {
-	// 	register,
-	// 	handleSubmit,
-	// 	watch,
-	// 	formState: { errors },
-	// } = useForm({});
+		clearErrors,
+		formState: { errors },
+	} = useForm<Inputs>();
 
 	const { addPlaceToMap } = useContext(GMapContext);
 
@@ -44,11 +33,9 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 		setValue("lng", coords.lng.toFixed(7));
 	}, [coords, setValue]);
 
+	// Handle the place information to be added
 	const onSubmit: SubmitHandler<Inputs> = (data) => {
-		// const onSubmit = (data: Inputs) => {
 		const { name, lat, lng } = data;
-
-		console.log("on submit");
 
 		const placeData: IPlaceData = {
 			name,
@@ -63,6 +50,10 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 		<Dialog.Root
 			open={openPlaceForm}
 			onOpenChange={() => {
+				clearErrors("name");
+				clearErrors("lat");
+				clearErrors("lng");
+
 				setOpenPlaceForm(false);
 			}}
 		>
@@ -73,14 +64,14 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 					Add relevant information about this place.
 				</Dialog.Description>
 
-				<Form.Root onSubmit={handleSubmit((data) => onSubmit(data))}>
+				<Form.Root onSubmit={handleSubmit(onSubmit)}>
 					{/* --> Input: Place Name */}
 					<Grid gap={"3"}>
 						<Form.Field name="PlaceName">
 							<Flex align={"baseline"} justify={"between"}>
 								<Form.Label>Name</Form.Label>
 								{errors.name && (
-									<Form.Message>
+									<Form.Message className={style["label--invalid"]}>
 										Please enter the name of the place.
 									</Form.Message>
 								)}
@@ -95,44 +86,51 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 						<Grid columns={"2"} gapX={"3"}>
 							<Form.Field name="lat">
 								<Form.Label>Latitude</Form.Label>
-								{errors.lat && (
-									<Form.Message>
-										Please enter the latitude of the place.
-									</Form.Message>
-								)}
-
-								<Form.Control asChild>
-									<TextField.Root
-										type="number"
-										step="0.000000001"
-										// defaultValue={coords.lat.toFixed(7)}
-										{...register("lat")}
-									/>
-								</Form.Control>
-							</Form.Field>
-							<Form.Field name="LongitudeValue">
-								<Form.Label>Longitude</Form.Label>
-								{errors.lng && (
-									<Form.Message>
-										Please enter the longitude of the place.
-									</Form.Message>
-								)}
-
 								<Form.Control asChild>
 									<TextField.Root
 										type="text"
-										// defaultValue={coords.lng.toFixed(7)}
-										{...register("lng", { required: true })}
+										{...register("lat", {
+											required: true,
+											pattern: /^-?\d+(\.\d+)?$/i,
+										})}
 									/>
 								</Form.Control>
+
+								{errors.lat?.type === "pattern" && (
+									<Form.Message className={style["label--invalid"]}>
+										Please enter a valid latitude value.
+									</Form.Message>
+								)}
+								{errors.lat?.type === "required" && (
+									<Form.Message className={style["label--invalid"]}>
+										Please enter the latitude of the place.
+									</Form.Message>
+								)}
+							</Form.Field>
+							<Form.Field name="LongitudeValue">
+								<Form.Label>Longitude</Form.Label>
+								<Form.Control asChild>
+									<TextField.Root
+										type="text"
+										{...register("lng", {
+											required: true,
+											pattern: /^-?\d+(\.\d+)?$/i,
+										})}
+									/>
+								</Form.Control>
+
+								{errors.lng && (
+									<Form.Message className={style["label--invalid"]}>
+										Please enter the longitude of the place.
+									</Form.Message>
+								)}
 							</Form.Field>
 						</Grid>
 					</Grid>
 
 					{/* Submit place */}
-					<Flex mt={"3"} gap={"3"} justify={"end"}>
+					<Flex mt={"5"} gap={"3"} justify={"end"}>
 						<Button type={"submit"}>Add place</Button>
-						{/* <input type="submit" value="Add" /> */}
 						<Dialog.Close>
 							<Button type={"button"} onClick={() => setOpenPlaceForm(false)}>
 								Close
@@ -140,25 +138,6 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 						</Dialog.Close>
 					</Flex>
 				</Form.Root>
-				{/* 
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<label htmlFor="name">Name</label>
-					<input
-						id="name"
-						{...register("name", { required: true, maxLength: 30 })}
-					/>
-					{errors.name && errors.name.type === "required" && (
-						
-					
-						<span>This is required</span>
-					)}
-					{errors.name && errors.name.type === "maxLength" && (
-						
-					
-						<span>Max length exceeded</span>
-					)}
-					<input type="submit" />
-				</form> */}
 			</Dialog.Content>
 		</Dialog.Root>
 	);
