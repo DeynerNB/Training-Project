@@ -1,4 +1,5 @@
 import type { T_GoogleAdvMarker } from "../types/Google.types";
+import type { IAmenities } from "../utils/FiltersOptions.util";
 import type { ICoordinates } from "./Coordinates.interface";
 
 export interface IPlaceData extends ICoordinates {
@@ -6,7 +7,7 @@ export interface IPlaceData extends ICoordinates {
 	description?: string;
 	images?: string[];
 	category_type?: string;
-	category_ammenities?: string[];
+	category_ammenities?: IAmenities[];
 }
 
 export interface IPlace extends IPlaceData {

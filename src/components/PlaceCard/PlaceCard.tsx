@@ -1,9 +1,18 @@
 import { TrashIcon } from "@radix-ui/react-icons";
-import { Box, Card, Flex, IconButton, Inset, Text } from "@radix-ui/themes";
+import {
+	Badge,
+	Box,
+	Card,
+	Flex,
+	IconButton,
+	Inset,
+	Text,
+} from "@radix-ui/themes";
 import type { IPlaceCard } from "./PlaceCard.interface";
 
 import { useEffect } from "react";
 import defaultPlaceImage from "../../assets/DefaultPlaceImage.jpg";
+import PlaceDialog from "../PlaceDialog/PlaceDialog";
 
 function PlaceCard(props: IPlaceCard) {
 	const { placeData, handleRemovePlace } = props;
@@ -30,9 +39,23 @@ function PlaceCard(props: IPlaceCard) {
 						/>
 					</Inset>
 
-					<Text as="div" size="2" weight="bold">
+					<Text as="label" size="6" weight="bold">
 						{placeData.name}
 					</Text>
+
+					{placeData.category_type && (
+						<Box>
+							<Badge>{placeData.category_type}</Badge>
+						</Box>
+					)}
+
+					{placeData.description && (
+						<Box>
+							<Text as="p" size="3" truncate>
+								{placeData.description}
+							</Text>
+						</Box>
+					)}
 					<Flex gap={"3"}>
 						<Text as="div" size="2">
 							Latitude: {placeData.lat}
@@ -41,11 +64,11 @@ function PlaceCard(props: IPlaceCard) {
 							Longitud: {placeData.lng}
 						</Text>
 					</Flex>
-					<Flex justify={"end"}>
+					<Flex mt={"2"} justify={"end"} align={"center"} gap={"3"}>
+						<PlaceDialog {...props} />
 						<IconButton
 							size={"3"}
 							variant={"ghost"}
-							mt={"2"}
 							onClick={() => handleRemovePlace(placeData.name)}
 						>
 							<TrashIcon color={"red"} />

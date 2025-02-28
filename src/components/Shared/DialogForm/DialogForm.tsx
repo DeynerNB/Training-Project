@@ -13,7 +13,10 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { GMapContext } from "../../../context/GMapContext/GMapContext";
 
 import type { IPlaceData } from "../../../interfaces/Places.interface";
-import { availableAmenities } from "../../../utils/FiltersOptions.util";
+import {
+	type IAmenities,
+	availableAmenities,
+} from "../../../utils/FiltersOptions.util";
 import { E_Categories, E_type } from "../../../utils/FiltersOptions.util";
 
 import type { Inputs } from "./DialogForm.interface";
@@ -58,6 +61,12 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 	const onSubmit: SubmitHandler<Inputs> = (data) => {
 		const { placeName, lat, lng, description, categoryType } = data;
 
+		const ammenitiesObject: IAmenities[] = [];
+
+		for (const ammenityKey of selectedAmenities) {
+			ammenitiesObject.push(availableAmenities[ammenityKey]);
+		}
+
 		const placeData: IPlaceData = {
 			name: placeName,
 			lat: Number.parseFloat(lat),
@@ -65,7 +74,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 			description,
 			images: [...placeImagesURLs],
 			category_type: categoryType,
-			category_ammenities: [...selectedAmenities],
+			category_ammenities: [...ammenitiesObject],
 		};
 		addPlaceToMap(placeData);
 		setOpenPlaceForm(false);

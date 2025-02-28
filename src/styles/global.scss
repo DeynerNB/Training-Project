@@ -129,3 +129,12 @@ body {
     position: absolute;
     bottom: 0;
 }
+
+.material-symbols-outlined {
+    user-select: none;
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+}

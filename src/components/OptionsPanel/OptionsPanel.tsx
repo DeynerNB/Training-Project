@@ -7,27 +7,11 @@ import {
 	TextField,
 } from "@radix-ui/themes";
 
-import DropdownMenuCategory from "../Shared/DrowdownMenuCategory/DrowdownMenuCategory";
+import DropdownMenuCategory from "../Shared/SelectCategory/SelectCategory";
+
+import { E_amenities, E_type } from "../../utils/FiltersOptions.util";
 
 function OptionsPanel() {
-	const type_options = [
-		"Café",
-		"Bar",
-		"Restaurant",
-		"Park",
-		"Co-working space",
-		"Other",
-	];
-
-	const amenities_options = [
-		"Free Wi-Fi",
-		"Outdoor seating",
-		"Pet-friendly",
-		"Live music",
-		"Dance floor",
-		"Parking available",
-	];
-
 	return (
 		<Flex direction={"column"} gap={"3"}>
 			{/* Search filter */}
@@ -43,14 +27,14 @@ function OptionsPanel() {
 
 			{/* Other filter */}
 			<Grid columns={"2"} gap={"3"}>
-				<DropdownMenuCategory
+				{/* <DropdownMenuCategory
 					filter_title={"Type"}
 					filter_options={type_options}
 				/>
 				<DropdownMenuCategory
 					filter_title={"Amenities"}
 					filter_options={amenities_options}
-				/>
+				/> */}
 			</Grid>
 
 			<Separator size={"4"} />

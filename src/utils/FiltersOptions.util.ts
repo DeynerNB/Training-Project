@@ -20,10 +20,10 @@ export enum E_type {
 	Other = "Other",
 }
 export const availableAmenities: IAmenitiesObject = {
-	FreeWiFi: { label: "Free Wi-Fi", icon: "" },
-	OutdoorSeating: { label: "Outdoor seating", icon: "" },
-	PetFriendly: { label: "Pet-friendly", icon: "" },
-	LiveMusic: { label: "Live music", icon: "" },
-	DanceFloor: { label: "Dance floor", icon: "" },
-	ParkingAvailable: { label: "Parking available", icon: "" },
+	FreeWiFi: { label: "Free Wi-Fi", icon: "wifi" },
+	OutdoorSeating: { label: "Outdoor seating", icon: "nature" },
+	PetFriendly: { label: "Pet-friendly", icon: "pets" },
+	LiveMusic: { label: "Live music", icon: "music_note" },
+	DanceFloor: { label: "Dance floor", icon: "nightlife" },
+	ParkingAvailable: { label: "Parking available", icon: "directions_car" },
 };
