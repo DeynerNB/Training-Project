@@ -13,11 +13,9 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { GMapContext } from "../../../context/GMapContext/GMapContext";
 
 import type { IPlaceData } from "../../../interfaces/Places.interface";
-import {
-	E_Categories,
-	E_amenities,
-	E_type,
-} from "../../../utils/FiltersOptions.util";
+import { availableAmenities } from "../../../utils/FiltersOptions.util";
+import { E_Categories, E_type } from "../../../utils/FiltersOptions.util";
+
 import type { Inputs } from "./DialogForm.interface";
 import type { IDialogForm } from "./DialogForm.interface";
 
@@ -218,7 +216,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 						<CheckboxCategory
 							labelValue="Amenities"
 							filterTitle={E_Categories.categoryAmenities}
-							filterOptions={E_amenities}
+							filterOptions={availableAmenities}
 							selectedAmenities={selectedAmenities}
 							setSelectedAmenities={setSelectedAmenities}
 						/>

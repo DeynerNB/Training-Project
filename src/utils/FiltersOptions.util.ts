@@ -1,3 +1,12 @@
+export interface IAmenities {
+	label: string;
+	icon: string;
+}
+
+export interface IAmenitiesObject {
+	[key: string]: IAmenities;
+}
+
 export enum E_Categories {
 	categoryType = "categoryType",
 	categoryAmenities = "categoryAmenities",
@@ -10,11 +19,11 @@ export enum E_type {
 	CoWorkingSpace = "Co-working space",
 	Other = "Other",
 }
-export enum E_amenities {
-	FreeWiFi = "Free Wi-Fi",
-	OutdoorSeating = "Outdoor seating",
-	PetFriendly = "Pet-friendly",
-	LiveMusic = "Live music",
-	DanceFloor = "Dance floor",
-	ParkingAvailable = "Parking available",
-}
+export const availableAmenities: IAmenitiesObject = {
+	FreeWiFi: { label: "Free Wi-Fi", icon: "" },
+	OutdoorSeating: { label: "Outdoor seating", icon: "" },
+	PetFriendly: { label: "Pet-friendly", icon: "" },
+	LiveMusic: { label: "Live music", icon: "" },
+	DanceFloor: { label: "Dance floor", icon: "" },
+	ParkingAvailable: { label: "Parking available", icon: "" },
+};

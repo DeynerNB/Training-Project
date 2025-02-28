@@ -9,9 +9,6 @@ function CheckboxCategory({
 	selectedAmenities,
 	setSelectedAmenities,
 }: ICheckboxCategoryProps) {
-	// Transform enum values to a list of values
-	const filterValues = Object.values(filterOptions);
-
 	// Update the selected options
 	const handleChange = (values: string[]) => {
 		setSelectedAmenities(values);
@@ -26,9 +23,9 @@ function CheckboxCategory({
 				value={selectedAmenities}
 				onValueChange={handleChange}
 			>
-				{filterValues.map((value) => (
-					<CheckboxGroup.Item key={value} value={value}>
-						{value}
+				{Object.entries(filterOptions).map(([key, value]) => (
+					<CheckboxGroup.Item key={key} value={key}>
+						{value.label}
 					</CheckboxGroup.Item>
 				))}
 			</CheckboxGroup.Root>
