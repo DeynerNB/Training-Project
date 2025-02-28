@@ -8,6 +8,7 @@ import type {
 } from "../../types/Google.types";
 import type { IGMapContext, IGMapProvider } from "./GMapContext.interface";
 
+import type { ICoordinates } from "../../interfaces/Coordinates.interface";
 import geoService from "../../services/Geoservice.service";
 
 const defaultValue: IGMapContext = {
@@ -18,6 +19,7 @@ const defaultValue: IGMapContext = {
 	addPlaceToMap: () => {},
 	removePlaceFromMap: () => {},
 	createInfoWindow: () => null,
+	showUserLocation: () => {},
 };
 
 // Create the context
@@ -32,6 +34,8 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 	const [placesList, setPlacesList] = useState<IPlace[]>([]);
 
 	const selectedMarkers = useRef<T_GoogleAdvMarker[]>([]);
+
+	const userLocationActiveRef = useRef<boolean>(false);
 
 	const addPlaceToMap = (placeData: IPlaceData) => {
 		const {
@@ -151,6 +155,33 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 		}
 	};
 
+	const showUserLocation = (coords: ICoordinates) => {
+		const Marker = geoService.getAdvancedMarker();
+		const PinElement = geoService.getPinElement();
+
+		if (!gMap || !Marker || !PinElement) {
+			console.error("Null reference: gMap or Marker");
+			return;
+		}
+
+		if (!userLocationActiveRef.current) {
+			const userPin = new PinElement({
+				background: "#4285F4",
+				borderColor: "#1159d1",
+				glyphColor: "#1159d1",
+			});
+
+			new Marker({
+				map: gMap,
+				position: coords,
+				content: userPin.element,
+			});
+		}
+
+		userLocationActiveRef.current = true;
+		gMap.panTo(coords);
+	};
+
 	return (
 		<GMapContext.Provider
 			value={{
@@ -161,6 +192,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 				addPlaceToMap,
 				removePlaceFromMap,
 				createInfoWindow,
+				showUserLocation,
 			}}
 		>
 			{children}

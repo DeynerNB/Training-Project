@@ -44,8 +44,14 @@ function GoogleMap() {
 	const mapDistanceMatrixRef = useRef<T_GoogleDistanceMatrix>(null);
 
 	// --- Context variables
-	const { gMap, selectedMarkers, setGMap, addPlaceToMap, createInfoWindow } =
-		useContext(GMapContext);
+	const {
+		gMap,
+		selectedMarkers,
+		setGMap,
+		addPlaceToMap,
+		createInfoWindow,
+		showUserLocation,
+	} = useContext(GMapContext);
 
 	useEffect(() => {
 		if (googleMapsScriptLoaded) {
@@ -124,11 +130,12 @@ function GoogleMap() {
 
 		setUserCoordinates(coords);
 
-		addPlaceToMap({
-			lat: coords.lat,
-			lng: coords.lng,
-			name: "Your position",
-		});
+		// addPlaceToMap({
+		// 	lat: coords.lat,
+		// 	lng: coords.lng,
+		// 	name: "Your position",
+		// });
+		showUserLocation(coords);
 	};
 
 	const handleDistanceCalculation = async () => {

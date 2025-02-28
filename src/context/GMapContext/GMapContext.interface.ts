@@ -1,4 +1,5 @@
 import type { Dispatch, ReactNode, RefObject, SetStateAction } from "react";
+import type { ICoordinates } from "../../interfaces/Coordinates.interface";
 import type { IPlace, IPlaceData } from "../../interfaces/Places.interface";
 import type {
 	T_GoogleAdvMarker,
@@ -21,4 +22,5 @@ export interface IGMapContext {
 		marker: T_GoogleAdvMarker,
 		content: string,
 	) => T_GoogleInfoWindow | null;
+	showUserLocation: (coords: ICoordinates) => void;
 }
