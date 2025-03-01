@@ -1,5 +1,89 @@
 @use "../../styles/shared/variables" as v;
 
-.container-title {
-    background-color: v.$primary-color;
+// CSS structure from with some modifications:
+// https://www.radix-ui.com/primitives/docs/components/accordion
+
+button,
+h3 {
+    all: unset;
+}
+
+.accordion-item {
+    overflow: hidden;
+    margin-top: 1px;
+
+    outline: 1px solid v.$gray-2;
+
+    &:first-child {
+        margin-top: 0;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    &:last-child {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+}
+
+.accordion-header {
+    display: flex;
+}
+
+.accordion-trigger {
+    padding: 0 20px;
+    height: 35px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+
+    &:hover {
+        background-color: v.$gray-1;
+    }
+
+    &[data-state="open"]>.accordion-icon {
+        transform: rotate(180deg);
+
+    }
+}
+
+.accordion-icon {
+    transition: transform 300ms cubic-bezier(.28, .86, .68, 1);
+}
+
+.accordion-content {
+    overflow: hidden;
+    font-size: 15px;
+
+    padding: 0.5rem;
+
+    &[data-state="open"] {
+        animation: slideDown 300ms cubic-bezier(.28, .86, .68, 1);
+    }
+
+    &[data-state="closed"] {
+        animation: slideUp 300ms cubic-bezier(.28, .86, .68, 1);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        height: 0;
+    }
+
+    to {
+        height: var(--radix-accordion-content-height);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        height: var(--radix-accordion-content-height);
+    }
+
+    to {
+        height: 0;
+    }
 }

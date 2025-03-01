@@ -1,22 +1,64 @@
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import PlaceCard from "../PlaceCard/PlaceCard";
 
 import { GMapContext } from "../../context/GMapContext/GMapContext";
 import type { IPlace } from "../../interfaces/Places.interface";
 
+import { FilterContext } from "../../context/FilterContext/FilterContext";
 import style from "./PlacesList.module.scss";
 
 function PlacesList() {
 	const { placesList, removePlaceFromMap } = useContext(GMapContext);
 
+	const { selectedFilters, searchActive, setSearchActive } =
+		useContext(FilterContext);
+
+	const [displayList, setDisplayList] = useState<IPlace[]>([...placesList]);
+
 	const handleRemovePlace = (markerId: string) => {
 		removePlaceFromMap(markerId);
 	};
 
+	useEffect(() => {
+		setDisplayList([...placesList]);
+	}, [placesList]);
+
+	useEffect(() => {
+		if (searchActive) {
+			let currentList = [...placesList];
+
+			// Filter by search
+			if (selectedFilters.searchValue !== "") {
+				console.log("Filter by search");
+				currentList = currentList.filter(
+					(place) => place.name === selectedFilters.searchValue,
+				);
+			}
+			// Filter by type
+			if (selectedFilters.type && (selectedFilters.type as string) !== "all") {
+				console.log("Filter by search");
+				currentList = currentList.filter(
+					(place) => place.category_type === selectedFilters.type,
+				);
+			}
+			// Filter by amenities
+			if (selectedFilters.ammenities.length > 0) {
+				console.log("Filter by amenities");
+				currentList = currentList.filter((place) =>
+					place.category_ammenities?.some((amenity) =>
+						selectedFilters.ammenities.includes(amenity.label),
+					),
+				);
+			}
+			setDisplayList([...currentList]);
+			setSearchActive(false);
+		}
+	}, [searchActive, selectedFilters, setSearchActive, placesList]);
+
 	return (
 		<>
-			{placesList.length === 0 ? (
+			{displayList.length === 0 ? (
 				<Box>
 					<Flex
 						p={"3"}
@@ -41,7 +83,7 @@ function PlacesList() {
 					overflowY={"scroll"}
 					rows={"repeat(auto-fill, 300px)"}
 				>
-					{placesList.map((place: IPlace) => {
+					{displayList.map((place: IPlace) => {
 						return (
 							<PlaceCard
 								key={place.name}
