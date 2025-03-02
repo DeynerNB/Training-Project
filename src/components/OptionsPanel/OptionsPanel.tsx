@@ -121,7 +121,6 @@ function OptionsPanel() {
 			</Accordion.Root>
 
 			<Button onClick={handleSearch}>Search</Button>
-			<Separator size={"4"} />
 		</Flex>
 	);
 }

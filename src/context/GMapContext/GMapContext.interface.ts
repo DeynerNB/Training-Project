@@ -15,8 +15,9 @@ export interface IGMapContext {
 	gMap: T_GoogleMap | null;
 	placesList: IPlace[];
 	selectedMarkers: RefObject<T_GoogleAdvMarker[]> | null;
+	initializePlaces: (places: IPlaceData[], map: T_GoogleMap) => void;
 	setGMap: Dispatch<SetStateAction<T_GoogleMap | null>>;
-	addPlaceToMap: (placeData: IPlaceData) => void;
+	addPlaceToMap: (placeData: IPlaceData, initialLoad?: boolean) => void;
 	removePlaceFromMap: (placeName: string) => void;
 	createInfoWindow: (
 		marker: T_GoogleAdvMarker,

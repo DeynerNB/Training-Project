@@ -55,6 +55,7 @@ function PlacesList() {
 					),
 				);
 			}
+			console.log("currentList: ", currentList);
 			setDisplayList([...currentList]);
 			setSearchActive(false);
 		}

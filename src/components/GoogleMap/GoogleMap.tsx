@@ -11,6 +11,7 @@ import type {
 	IGeolocationCoordinates,
 } from "../../interfaces/Coordinates.interface";
 
+import type { IPlaceData } from "../../interfaces/Places.interface";
 import geoService from "../../services/Geoservice.service";
 import type {
 	T_GoogleDistanceMatrix,
@@ -19,8 +20,6 @@ import type {
 import DialogForm from "../Shared/DialogForm/DialogForm";
 
 function GoogleMap() {
-	const storageKey = "user-coordinates";
-
 	// -- Hooks variables
 	const [openPlaceForm, setOpenPlaceForm] = useState(false);
 
@@ -32,7 +31,7 @@ function GoogleMap() {
 	});
 
 	// -- Custom hooks variables
-	const { getStorageValue } = useLocalStorage(storageKey);
+	const { writeStorageValue, getStorageValue } = useLocalStorage();
 
 	const { googleMapsScriptLoaded, loadGoogleSripts } = useGoogleMapsScript();
 
@@ -47,6 +46,7 @@ function GoogleMap() {
 	const {
 		gMap,
 		selectedMarkers,
+		initializePlaces,
 		setGMap,
 		addPlaceToMap,
 		createInfoWindow,
@@ -100,6 +100,13 @@ function GoogleMap() {
 
 		mapPolylineRef.current = new google.maps.Polyline({ geodesic: true });
 		mapDistanceMatrixRef.current = new google.maps.DistanceMatrixService();
+
+		// Load saved user places
+		const userPlaces = getStorageValue("user-places");
+		if (userPlaces) {
+			const userPlacesList: IPlaceData[] = JSON.parse(userPlaces);
+			initializePlaces(userPlacesList, googleMapObj);
+		}
 	};
 
 	const handleMyLocation = async () => {
@@ -108,7 +115,7 @@ function GoogleMap() {
 			return;
 		}
 
-		const coordsRaw = getStorageValue();
+		const coordsRaw = getStorageValue("user-coordinates");
 		let coords: ICoordinates | null = null;
 
 		if (!coordsRaw) {
@@ -119,6 +126,8 @@ function GoogleMap() {
 				lat: latitude,
 				lng: longitude,
 			};
+
+			writeStorageValue("user-coordinates", JSON.stringify(coords));
 		} else {
 			coords = JSON.parse(coordsRaw);
 		}
@@ -225,7 +234,7 @@ function GoogleMap() {
 				</>
 			) : (
 				<Flex justify={"center"} align={"center"}>
-					<Button onClick={loadGMaps}>Load Google Maps</Button>
+					<Button onClick={loadGMaps}>Load Map</Button>
 				</Flex>
 			)}
 		</>

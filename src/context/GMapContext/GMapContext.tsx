@@ -12,6 +12,7 @@ import type {
 } from "../../types/Google.types";
 import type { IGMapContext, IGMapProvider } from "./GMapContext.interface";
 
+import useLocalStorage from "../../hooks/useLocalStorage";
 import type { ICoordinates } from "../../interfaces/Coordinates.interface";
 import geoService from "../../services/Geoservice.service";
 
@@ -19,6 +20,7 @@ const defaultValue: IGMapContext = {
 	gMap: null,
 	placesList: [],
 	selectedMarkers: null,
+	initializePlaces: () => {},
 	setGMap: () => {},
 	addPlaceToMap: () => {},
 	removePlaceFromMap: () => {},
@@ -42,38 +44,51 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 
 	const userLocationActiveRef = useRef<boolean>(false);
 
+	const { writeStorageValue, getStorageValue } = useLocalStorage();
+
+	const initializePlaces = (places: IPlaceData[], map: T_GoogleMap) => {
+		const userPlaces: IPlace[] = [];
+
+		for (const place of places) {
+			const { name, lat, lng } = place;
+			const marker = createMarker({ name, lat, lng }, map);
+			userPlaces.push({ ...place, marker });
+		}
+
+		setPlacesList(userPlaces);
+	};
+
+	const updateUserPlacesStorage = (places: IPlace[]) => {
+		const jsonPlaces = JSON.stringify(
+			places.map(({ marker, ...data }) => data),
+		);
+		writeStorageValue("user-places", jsonPlaces);
+	};
+
 	const addPlaceToMap = (placeData: IPlaceData) => {
-		const {
-			name,
-			lat,
-			lng,
-			description,
-			images,
-			category_type,
-			category_ammenities,
-			isFavorite,
-		} = placeData;
+		const { name, lat, lng } = placeData;
 
 		const marker = createMarker({ name, lat, lng });
+		console.log("marker: ", marker);
 
 		setPlacesList([
 			...placesList,
 			{
-				name,
-				lat,
-				lng,
-				description,
-				images,
+				...placeData,
 				marker,
-				category_type,
-				category_ammenities,
-				isFavorite,
 			},
 		]);
+
+		const savedPlaces = getStorageValue("user-places");
+		const places = savedPlaces ? JSON.parse(savedPlaces) : [];
+		writeStorageValue("user-places", JSON.stringify([...places, placeData]));
 	};
 
 	const removePlaceFromMap = (placeName: string) => {
-		setPlacesList(placesList.filter((place) => place.name !== placeName));
+		const filteredList = placesList.filter((place) => place.name !== placeName);
+
+		setPlacesList(filteredList);
+		updateUserPlacesStorage(filteredList);
 
 		removeMarker(placeName);
 	};
@@ -105,7 +120,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 	};
 
 	// --> Create a marker in a specific position and add it to the map
-	const createMarker = ({ name, lat, lng }: IMarker) => {
+	const createMarker = ({ name, lat, lng }: IMarker, map?: T_GoogleMap) => {
 		const Marker = geoService.getAdvancedMarker();
 		const PinElement = geoService.getPinElement();
 
@@ -115,7 +130,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 		}
 
 		const marker = new Marker({
-			map: gMap,
+			map: map || gMap,
 			position: { lat, lng },
 			title: name,
 			gmpClickable: true,
@@ -197,7 +212,11 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 				(place) => place.name !== placeName,
 			);
 			selectedPlace.isFavorite = !selectedPlace.isFavorite;
-			setPlacesList([selectedPlace, ...filteredPlacesList]);
+
+			const places = [selectedPlace, ...filteredPlacesList];
+
+			setPlacesList(places);
+			updateUserPlacesStorage(places);
 		}
 	};
 
@@ -207,6 +226,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 				gMap,
 				selectedMarkers,
 				placesList,
+				initializePlaces,
 				setGMap,
 				addPlaceToMap,
 				removePlaceFromMap,
