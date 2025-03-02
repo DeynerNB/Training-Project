@@ -1,11 +1,34 @@
-import { Badge, Box, Button, Dialog, Flex, Link, Text } from "@radix-ui/themes";
+import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
+import {
+	Badge,
+	Box,
+	Button,
+	Dialog,
+	Flex,
+	IconButton,
+	Link,
+	Text,
+} from "@radix-ui/themes";
 import type { IPlaceDialogProps } from "./PlaceDialog.interface";
 
 import defaultPlaceImage from "../../assets/DefaultPlaceImage.jpg";
 
+import { useContext, useState } from "react";
+import { GMapContext } from "../../context/GMapContext/GMapContext";
 import style from "./PlaceDialog.module.scss";
 
 function PlaceDialog({ placeData }: IPlaceDialogProps) {
+	const { toggleFavorite } = useContext(GMapContext);
+
+	const [favoriteIcon, setFavoriteIcon] = useState<boolean>(
+		placeData.isFavorite,
+	);
+
+	const handleToggleFavorite = () => {
+		toggleFavorite(placeData.name);
+		setFavoriteIcon(!favoriteIcon);
+	};
+
 	return (
 		<Dialog.Root>
 			<Dialog.Trigger>
@@ -24,9 +47,20 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						src={placeData.images?.[0] || defaultPlaceImage}
 						alt={placeData.name}
 					/>
-					<Dialog.Title className={style["place-title"]} size={"7"}>
-						{placeData.name}
-					</Dialog.Title>
+					<Flex
+						width={"100%"}
+						position={"absolute"}
+						bottom={"0"}
+						className={style["place-title"]}
+						justify={"between"}
+						align={"center"}
+						px={"3"}
+					>
+						<Dialog.Title size={"7"}>{placeData.name}</Dialog.Title>
+						<IconButton variant={"ghost"} onClick={handleToggleFavorite}>
+							{favoriteIcon ? <StarFilledIcon /> : <StarIcon />}
+						</IconButton>
+					</Flex>
 				</Box>
 
 				{/* Other information */}
@@ -64,6 +98,8 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 								</Link>
 							</Box>
 						</Flex>
+
+						{/* Place type and favorite option */}
 						<Box>
 							<Badge size={"3"} style={{ placeSelf: "end" }}>
 								{placeData.category_type}

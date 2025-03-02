@@ -79,6 +79,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 			images: [...placeImagesURLs],
 			category_type: categoryType,
 			category_ammenities: [...ammenitiesObject],
+			isFavority: false,
 		};
 		addPlaceToMap(placeData);
 		setOpenPlaceForm(false);
