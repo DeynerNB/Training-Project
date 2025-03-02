@@ -9,7 +9,7 @@ import {
 	TextField,
 } from "@radix-ui/themes";
 
-import { ChangeEvent, useContext, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import { FilterContext } from "../../context/FilterContext/FilterContext";
 import { E_type } from "../../utils/FiltersOptions.util";
 
@@ -24,8 +24,6 @@ function OptionsPanel() {
 
 	const { setSelectedFilters, setSearchActive } = useContext(FilterContext);
 
-	// const [searchValue, setSearchValue] = useState("");
-
 	const searchInputRef = useRef<HTMLInputElement | null>(null);
 
 	const handleTypeSelection = (value: E_type) => {
@@ -35,11 +33,6 @@ function OptionsPanel() {
 	const handleAmmenitiesSelection = (values: string[]) => {
 		setSelectedFilters((s) => ({ ...s, ammenities: values }));
 	};
-
-	// const handleSearchValue = (event: ChangeEvent<HTMLInputElement>) => {
-	// 	const { target } = event;
-	// 	setSearchValue(target.value);
-	// };
 
 	const handleSearch = () => {
 		setSelectedFilters((s) => ({

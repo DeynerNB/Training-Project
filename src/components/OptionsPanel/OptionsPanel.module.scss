@@ -43,6 +43,10 @@ h3 {
         background-color: v.$gray-1;
     }
 
+    &:focus {
+        border: 1px solid v.$primary-color;
+    }
+
     &[data-state="open"]>.accordion-icon {
         transform: rotate(180deg);
 
