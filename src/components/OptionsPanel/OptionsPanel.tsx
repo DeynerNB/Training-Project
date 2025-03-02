@@ -1,10 +1,12 @@
 import {
+	Box,
 	Button,
 	CheckboxGroup,
 	Flex,
 	Grid,
 	Select,
 	Separator,
+	Switch,
 	Text,
 	TextField,
 } from "@radix-ui/themes";
@@ -26,6 +28,8 @@ function OptionsPanel() {
 
 	const searchInputRef = useRef<HTMLInputElement | null>(null);
 
+	const showFavoriteRef = useRef<boolean>(false);
+
 	const handleTypeSelection = (value: E_type) => {
 		setSelectedFilters((s) => ({ ...s, type: value }));
 	};
@@ -34,10 +38,15 @@ function OptionsPanel() {
 		setSelectedFilters((s) => ({ ...s, ammenities: values }));
 	};
 
+	const handleToggleFavorite = () => {
+		showFavoriteRef.current = !showFavoriteRef.current;
+	};
+
 	const handleSearch = () => {
 		setSelectedFilters((s) => ({
 			...s,
 			searchValue: searchInputRef.current?.value || "",
+			showFavorites: showFavoriteRef.current,
 		}));
 		setSearchActive(true);
 	};
@@ -51,6 +60,11 @@ function OptionsPanel() {
 			{/* Search filter */}
 			<Text as={"span"}>MyMap</Text>
 			<TextField.Root ref={searchInputRef} placeholder="Search" />
+
+			<Flex gap={"2"} align={"center"}>
+				<Switch size={"2"} onCheckedChange={handleToggleFavorite} /> Show
+				favorites
+			</Flex>
 
 			<Separator size={"4"} />
 

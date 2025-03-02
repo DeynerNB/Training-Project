@@ -35,6 +35,10 @@ function PlacesList() {
 					(place) => place.name === selectedFilters.searchValue,
 				);
 			}
+			// Filter by favorite
+			if (selectedFilters.showFavorites) {
+				currentList = currentList.filter((place) => place.isFavorite);
+			}
 			// Filter by type
 			if (selectedFilters.type && (selectedFilters.type as string) !== "all") {
 				console.log("Filter by search");

@@ -23,4 +23,5 @@ export interface IGMapContext {
 		content: string,
 	) => T_GoogleInfoWindow | null;
 	showUserLocation: (coords: ICoordinates) => void;
+	toggleFavorite: (placeName: string) => void;
 }

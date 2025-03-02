@@ -1,6 +1,10 @@
 import { createContext, useRef, useState } from "react";
 
-import type { IPlace, IPlaceData } from "../../interfaces/Places.interface";
+import type {
+	IMarker,
+	IPlace,
+	IPlaceData,
+} from "../../interfaces/Places.interface";
 import type {
 	T_GoogleAdvMarker,
 	T_GoogleInfoWindow,
@@ -20,6 +24,7 @@ const defaultValue: IGMapContext = {
 	removePlaceFromMap: () => {},
 	createInfoWindow: () => null,
 	showUserLocation: () => {},
+	toggleFavorite: () => {},
 };
 
 // Create the context
@@ -46,6 +51,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 			images,
 			category_type,
 			category_ammenities,
+			isFavorite,
 		} = placeData;
 
 		const marker = createMarker({ name, lat, lng });
@@ -61,6 +67,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 				marker,
 				category_type,
 				category_ammenities,
+				isFavorite,
 			},
 		]);
 	};
@@ -98,7 +105,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 	};
 
 	// --> Create a marker in a specific position and add it to the map
-	const createMarker = ({ name, lat, lng }: IPlaceData) => {
+	const createMarker = ({ name, lat, lng }: IMarker) => {
 		const Marker = geoService.getAdvancedMarker();
 		const PinElement = geoService.getPinElement();
 
@@ -182,6 +189,18 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 		gMap.panTo(coords);
 	};
 
+	const toggleFavorite = (placeName: string) => {
+		const selectedPlace = placesList.find((place) => place.name === placeName);
+
+		if (selectedPlace) {
+			const filteredPlacesList = placesList.filter(
+				(place) => place.name !== placeName,
+			);
+			selectedPlace.isFavorite = !selectedPlace.isFavorite;
+			setPlacesList([selectedPlace, ...filteredPlacesList]);
+		}
+	};
+
 	return (
 		<GMapContext.Provider
 			value={{
@@ -193,6 +212,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 				removePlaceFromMap,
 				createInfoWindow,
 				showUserLocation,
+				toggleFavorite,
 			}}
 		>
 			{children}

@@ -5,6 +5,7 @@ export interface IFilterOptions {
 	searchValue: string;
 	type: E_type | null;
 	ammenities: string[];
+	showFavorites: boolean;
 }
 
 export interface IFilterProvider {

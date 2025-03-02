@@ -7,7 +7,12 @@ import type {
 } from "./FilterContext.interface";
 
 const defaultValue: IFilterContext = {
-	selectedFilters: { searchValue: "", type: null, ammenities: [] },
+	selectedFilters: {
+		searchValue: "",
+		type: null,
+		ammenities: [],
+		showFavorites: false,
+	},
 	setSelectedFilters: () => {},
 	searchActive: false,
 	setSearchActive: () => {},
@@ -22,6 +27,7 @@ export const FilterProvider = ({ children }: IFilterProvider) => {
 		searchValue: "",
 		type: null,
 		ammenities: [],
+		showFavorites: false,
 	});
 
 	const [searchActive, setSearchActive] = useState<boolean>(false);

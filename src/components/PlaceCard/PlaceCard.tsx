@@ -1,4 +1,4 @@
-import { TrashIcon } from "@radix-ui/react-icons";
+import { StarFilledIcon, StarIcon, TrashIcon } from "@radix-ui/react-icons";
 import {
 	Badge,
 	Box,
@@ -39,9 +39,13 @@ function PlaceCard(props: IPlaceCard) {
 						/>
 					</Inset>
 
-					<Text as="label" size="6" weight="bold">
-						{placeData.name}
-					</Text>
+					<Flex justify={"between"} align={"center"}>
+						<Text as="label" size="6" weight="bold">
+							{placeData.name}
+						</Text>
+
+						{placeData.isFavorite ? <StarFilledIcon /> : <></>}
+					</Flex>
 
 					{placeData.category_type && (
 						<Box>
