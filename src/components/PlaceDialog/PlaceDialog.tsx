@@ -77,6 +77,12 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 							</Text>
 							<Text as="p">{placeData.description}</Text>
 
+							{/* Budget */}
+							<Text as="span" weight={"medium"}>
+								Budget:
+							</Text>
+							<Text as="p">{placeData.categoryBudget}</Text>
+
 							{/* Amenities */}
 							<Text as="span" weight={"medium"}>
 								Amenities:

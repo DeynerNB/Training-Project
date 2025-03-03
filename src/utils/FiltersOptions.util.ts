@@ -10,6 +10,7 @@ export interface IAmenitiesObject {
 export enum E_Categories {
 	categoryType = "categoryType",
 	categoryAmenities = "categoryAmenities",
+	categoryBudget = "categoryBudget",
 }
 export enum E_type {
 	Café = "Café",
@@ -18,6 +19,13 @@ export enum E_type {
 	Park = "Park",
 	CoWorkingSpace = "Co-working space",
 	Other = "Other",
+}
+
+export enum E_Budget {
+	Free = "Free",
+	Low = "$ (Low)",
+	Medium = "$$ (Moderate)",
+	High = "$$$ (High)",
 }
 export const availableAmenities: IAmenitiesObject = {
 	FreeWiFi: { label: "Free Wi-Fi", icon: "wifi" },

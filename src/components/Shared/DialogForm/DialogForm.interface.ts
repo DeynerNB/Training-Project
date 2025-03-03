@@ -16,4 +16,5 @@ export type Inputs = {
 	imageURL: string;
 	categoryType: string;
 	categoryAmenities: string;
+	categoryBudget: string;
 };

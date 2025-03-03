@@ -23,6 +23,7 @@ import type { IDialogForm } from "./DialogForm.interface";
 
 // Utils imports
 import {
+	E_Budget,
 	E_Categories,
 	E_type,
 	type IAmenities,
@@ -69,11 +70,13 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 		setValue("categoryType", Object.values(E_type)[0]);
 		setValue("description", "");
 		setValue("imageURL", "");
+		setValue("categoryBudget", Object.values(E_Budget)[0]);
 	}, [coords, setValue]);
 
 	// Handle the place information to be added
 	const onSubmit: SubmitHandler<Inputs> = (data, e) => {
-		const { placeName, lat, lng, description, categoryType } = data;
+		const { placeName, lat, lng, description, categoryType, categoryBudget } =
+			data;
 
 		const ammenitiesObject: IAmenities[] = [];
 
@@ -100,6 +103,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 			category_type: categoryType,
 			category_ammenities: [...ammenitiesObject],
 			isFavorite: false,
+			categoryBudget,
 		};
 
 		addPlaceToMap(placeData);
@@ -275,14 +279,27 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 								control={control}
 							/>
 
-							{/* --> Input: Place amenities */}
-							<CheckboxCategory
-								labelValue="Amenities"
-								filterTitle={E_Categories.categoryAmenities}
-								filterOptions={availableAmenities}
-								selectedAmenities={selectedAmenities}
-								setSelectedAmenities={setSelectedAmenities}
-							/>
+							<Grid columns={"2"}>
+								{/* --> Input: Place amenities */}
+								<Box>
+									<CheckboxCategory
+										labelValue="Amenities"
+										filterTitle={E_Categories.categoryAmenities}
+										filterOptions={availableAmenities}
+										selectedAmenities={selectedAmenities}
+										setSelectedAmenities={setSelectedAmenities}
+									/>
+								</Box>
+								{/* --> Input: Place Budget */}
+								<Flex gap={"2"} direction={"column"}>
+									<SelectCategory
+										labelValue="Budget"
+										filter_title={E_Categories.categoryBudget}
+										filter_options={E_Budget}
+										control={control}
+									/>
+								</Flex>
+							</Grid>
 						</Grid>
 
 						{/* --> Images Grid */}

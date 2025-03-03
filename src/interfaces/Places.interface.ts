@@ -7,6 +7,7 @@ export interface IPlaceData extends IMarker {
 	images?: string[];
 	category_type?: string;
 	category_ammenities?: IAmenities[];
+	categoryBudget?: string;
 	isFavorite: boolean;
 }
 
