@@ -1,10 +1,6 @@
 import type { T_GoogleAdvMarker } from "../types/Google.types";
 import type { IAmenities } from "../utils/FiltersOptions.util";
-import type { ICoordinates } from "./Coordinates.interface";
-
-export interface IMarker extends ICoordinates {
-	name: string;
-}
+import type { IMarker } from "./Marker.interface";
 
 export interface IPlaceData extends IMarker {
 	description?: string;

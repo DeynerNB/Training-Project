@@ -3,6 +3,8 @@ import { Controller } from "react-hook-form";
 
 import type { ISelectCategoryProps } from "./SelectCategory.interface";
 
+import style from "../DialogForm/DialogForm.module.scss";
+
 function SelectCategory({
 	labelValue,
 	filter_title,
@@ -16,9 +18,12 @@ function SelectCategory({
 		<Controller
 			name={filter_title}
 			control={control}
+			rules={{ required: true }}
 			render={({ field }) => (
 				<>
-					<Text as="label">{labelValue}</Text>
+					<Text as="label" className={style["label--required"]}>
+						{labelValue}
+					</Text>
 
 					<Select.Root
 						{...field}

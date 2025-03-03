@@ -9,17 +9,19 @@ import {
 	Link,
 	Text,
 } from "@radix-ui/themes";
-import type { IPlaceDialogProps } from "./PlaceDialog.interface";
+import { useContext, useState } from "react";
 
 import defaultPlaceImage from "../../assets/DefaultPlaceImage.jpg";
-
-import { useContext, useState } from "react";
 import { GMapContext } from "../../context/GMapContext/GMapContext";
+import type { IPlaceDialogProps } from "./PlaceDialog.interface";
+
 import style from "./PlaceDialog.module.scss";
 
 function PlaceDialog({ placeData }: IPlaceDialogProps) {
+	// Function to change the favorite state of a place
 	const { toggleFavorite } = useContext(GMapContext);
 
+	// Control which icon to display
 	const [favoriteIcon, setFavoriteIcon] = useState<boolean>(
 		placeData.isFavorite,
 	);
@@ -31,6 +33,7 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 
 	return (
 		<Dialog.Root>
+			{/* Button trigger to open dialog */}
 			<Dialog.Trigger>
 				<Button variant="ghost">View details</Button>
 			</Dialog.Trigger>
@@ -47,6 +50,7 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						src={placeData.images?.[0] || defaultPlaceImage}
 						alt={placeData.name}
 					/>
+					{/* Name and favorite button container */}
 					<Flex
 						width={"100%"}
 						position={"absolute"}
@@ -99,7 +103,7 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 							</Box>
 						</Flex>
 
-						{/* Place type and favorite option */}
+						{/* Place type */}
 						<Box>
 							<Badge size={"3"} style={{ placeSelf: "end" }}>
 								{placeData.category_type}
@@ -107,6 +111,7 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						</Box>
 					</Flex>
 
+					{/* Dialog Close button */}
 					<Box mt={"2"} style={{ textAlign: "end" }}>
 						<Dialog.Close style={{ placeSelf: "end" }}>
 							<Button variant="soft" color="gray">

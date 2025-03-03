@@ -1,32 +1,34 @@
 import { createContext, useRef, useState } from "react";
 
-import type {
-	IMarker,
-	IPlace,
-	IPlaceData,
-} from "../../interfaces/Places.interface";
+import type { ICoordinates } from "../../interfaces/Coordinates.interface";
+// -- Interfaces export
+import type { IMarker } from "../../interfaces/Marker.interface";
+import type { IPlace, IPlaceData } from "../../interfaces/Places.interface";
 import type {
 	T_GoogleAdvMarker,
 	T_GoogleInfoWindow,
 	T_GoogleMap,
+	T_GooglePinElement,
 } from "../../types/Google.types";
 import type { IGMapContext, IGMapProvider } from "./GMapContext.interface";
 
+// -- Hooks and service export
 import useLocalStorage from "../../hooks/useLocalStorage";
-import type { ICoordinates } from "../../interfaces/Coordinates.interface";
 import geoService from "../../services/Geoservice.service";
 
 const defaultValue: IGMapContext = {
 	gMap: null,
-	placesList: [],
-	selectedMarkers: null,
-	initializePlaces: () => {},
 	setGMap: () => {},
+	placesList: [],
+	initializePlacesFromList: () => {},
 	addPlaceToMap: () => {},
 	removePlaceFromMap: () => {},
+	findPlace: () => undefined,
 	createInfoWindow: () => null,
+	selectedMarkers: null,
 	showUserLocation: () => {},
 	toggleFavorite: () => {},
+	setMapCenter: () => {},
 };
 
 // Create the context
@@ -44,9 +46,19 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 
 	const userLocationActiveRef = useRef<boolean>(false);
 
-	const { writeStorageValue, getStorageValue } = useLocalStorage();
+	const { writeStorageValue } = useLocalStorage();
 
-	const initializePlaces = (places: IPlaceData[], map: T_GoogleMap) => {
+	// Sort the places list by the favorite attribute
+	const sortByFavoritePlace = (places: IPlace[]) => {
+		places.sort((placeA, placeB) =>
+			placeA.isFavorite === placeB.isFavorite ? 0 : placeA.isFavorite ? -1 : 1,
+		);
+
+		return places;
+	};
+
+	// Load the user saved places list into the map
+	const initializePlacesFromList = (places: IPlaceData[], map: T_GoogleMap) => {
 		const userPlaces: IPlace[] = [];
 
 		for (const place of places) {
@@ -55,100 +67,159 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 			userPlaces.push({ ...place, marker });
 		}
 
-		setPlacesList(userPlaces);
+		const sortedPlaces = sortByFavoritePlace(userPlaces);
+		setPlacesList(sortedPlaces);
 	};
 
-	const updateUserPlacesStorage = (places: IPlace[]) => {
+	// Update the list of places saved in local storage
+	const updatePlacesLocalStorage = (places: IPlace[]) => {
 		const jsonPlaces = JSON.stringify(
 			places.map(({ marker, ...data }) => data),
 		);
 		writeStorageValue("user-places", jsonPlaces);
 	};
 
-	const addPlaceToMap = (placeData: IPlaceData) => {
-		const { name, lat, lng } = placeData;
-
-		const marker = createMarker({ name, lat, lng });
-		console.log("marker: ", marker);
-
-		setPlacesList([
-			...placesList,
-			{
-				...placeData,
-				marker,
-			},
-		]);
-
-		const savedPlaces = getStorageValue("user-places");
-		const places = savedPlaces ? JSON.parse(savedPlaces) : [];
-		writeStorageValue("user-places", JSON.stringify([...places, placeData]));
-	};
-
-	const removePlaceFromMap = (placeName: string) => {
-		const filteredList = placesList.filter((place) => place.name !== placeName);
-
-		setPlacesList(filteredList);
-		updateUserPlacesStorage(filteredList);
-
-		removeMarker(placeName);
-	};
-
-	const updateSelectedMarkersList = (marker: T_GoogleAdvMarker) => {
+	// Create google pin object
+	const createPinElement = (
+		background: string,
+		borderColor?: string,
+		glyphColor?: string,
+	) => {
 		const PinElement = geoService.getPinElement();
 
 		if (!PinElement) {
 			console.error("Null reference: PinElement");
-			return null;
+			return;
 		}
 
-		const pinDefault = new PinElement({
-			background: "#FC4C04",
+		const pin = new PinElement({
+			background,
+			borderColor,
+			glyphColor,
 		});
-		const pinBackground = new PinElement({
-			background: "#FBBC04",
-		});
 
-		if (selectedMarkers.current.length >= 2) {
-			const oldestSelection = selectedMarkers.current[0];
-			oldestSelection.content = pinDefault.element;
-			selectedMarkers.current.shift();
-		}
-
-		marker.content = pinBackground.element;
-
-		selectedMarkers.current.push(marker);
+		return pin;
 	};
 
-	// --> Create a marker in a specific position and add it to the map
-	const createMarker = ({ name, lat, lng }: IMarker, map?: T_GoogleMap) => {
+	// Create a google map marker in a specific position
+	const createMarker = (
+		{ name, lat, lng }: IMarker,
+		map?: T_GoogleMap,
+		pin?: T_GooglePinElement,
+	) => {
 		const Marker = geoService.getAdvancedMarker();
-		const PinElement = geoService.getPinElement();
 
-		if (!Marker || !PinElement) {
-			console.error("Null reference: Marker or InfoWindow or PinElement");
+		if (!Marker) {
+			console.error("Null reference: Marker");
 			return null;
 		}
 
+		// Create the marker object
 		const marker = new Marker({
 			map: map || gMap,
 			position: { lat, lng },
 			title: name,
 			gmpClickable: true,
+			content: pin?.element,
 		});
 
+		// Set the map view into the marker
 		gMap?.panTo({ lat, lng });
 
+		// Create the clickable event listenter
 		marker.addEventListener("gmp-click", () => {
+			// If there is another marker infowindow open -> Close it
 			if (activeMarker.current) {
 				activeMarker.current.close();
 			}
 
+			// Update the list of selected markers
 			updateSelectedMarkersList(marker);
 		});
 
 		return marker;
 	};
 
+	// Add a new place and set up the marker on the map
+	const addPlaceToMap = (placeData: IPlaceData) => {
+		const { name, lat, lng } = placeData;
+
+		const marker = createMarker({ name, lat, lng });
+
+		const places = [
+			...placesList,
+			{
+				...placeData,
+				marker,
+			},
+		];
+
+		// Update the places list
+		setPlacesList(places);
+		// Update the local storage list of places
+		updatePlacesLocalStorage(places);
+	};
+
+	// Remove a selected place from the map
+	const removePlaceFromMap = (placeName: string) => {
+		const filteredList = placesList.filter((place) => place.name !== placeName);
+
+		// Update the list without the specified place
+		setPlacesList(filteredList);
+		updatePlacesLocalStorage(filteredList);
+
+		// Remove the marker from the map
+		removeMarker(placeName);
+	};
+
+	// Remove a marker from the map
+	const removeMarker = (name: string) => {
+		const selectedPlace = placesList.find((place) => place.name === name);
+
+		if (selectedPlace?.marker) {
+			selectedPlace.marker.map = null;
+		}
+	};
+
+	// Update the list of selected markers
+	const updateSelectedMarkersList = (marker: T_GoogleAdvMarker) => {
+		// Create each pin style
+		const pinDefault = createPinElement("#FC4C04");
+		const pinBackground = createPinElement("#FBBC04");
+
+		if (!pinDefault || !pinBackground) {
+			return;
+		}
+
+		// If the selected marker is already selected
+		const index = selectedMarkers.current.indexOf(marker);
+		if (index >= 0) {
+			// Get the non selected marker index
+			const nonSelectedIndex = Math.abs(index - 1);
+			const nonSelectedMarker = selectedMarkers.current[nonSelectedIndex];
+
+			// Get the selected marker and updated its style
+			const selectedMarker = selectedMarkers.current[index];
+			selectedMarker.content = pinDefault.element;
+
+			// Remove the selected marker form the selected list
+			selectedMarkers.current = nonSelectedMarker ? [nonSelectedMarker] : [];
+			return;
+		}
+
+		// If there is already 2 markers selected -> Remove the oldest one
+		if (selectedMarkers.current.length >= 2) {
+			const oldestSelection = selectedMarkers.current[0];
+			oldestSelection.content = pinDefault.element;
+			selectedMarkers.current.shift();
+		}
+
+		// Update the marker pin and added it to the selected list
+		marker.content = pinBackground.element;
+		selectedMarkers.current.push(marker);
+	};
+
+	// Create an InfoWindow Object
 	const createInfoWindow = (marker: T_GoogleAdvMarker, content: string) => {
 		const InfoWindow = geoService.getInfoWindow();
 
@@ -168,56 +239,45 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 		return infoWindow;
 	};
 
-	// --> Remove a marker from the map
-	const removeMarker = (name: string) => {
-		const selectedPlace = placesList.find((place) => place.name === name);
-
-		if (selectedPlace?.marker) {
-			selectedPlace.marker.map = null;
-		}
-	};
-
+	// Set the user location marker on the map
 	const showUserLocation = (coords: ICoordinates) => {
-		const Marker = geoService.getAdvancedMarker();
-		const PinElement = geoService.getPinElement();
-
-		if (!gMap || !Marker || !PinElement) {
-			console.error("Null reference: gMap or Marker");
-			return;
-		}
-
 		if (!userLocationActiveRef.current) {
-			const userPin = new PinElement({
-				background: "#4285F4",
-				borderColor: "#1159d1",
-				glyphColor: "#1159d1",
-			});
+			const userPin = createPinElement("#4285F4", "#1159d1", "#1159d1");
 
-			new Marker({
-				map: gMap,
-				position: coords,
-				content: userPin.element,
-			});
+			createMarker(
+				{ name: "Your position", lat: coords.lat, lng: coords.lng },
+				undefined,
+				userPin,
+			);
 		}
 
 		userLocationActiveRef.current = true;
-		gMap.panTo(coords);
 	};
 
+	// Set place as favorite or non-favorite
 	const toggleFavorite = (placeName: string) => {
+		const places = placesList.map((place) => {
+			if (place.name === placeName) {
+				return { ...place, isFavorite: !place.isFavorite };
+			}
+
+			return place;
+		});
+
+		const sortedPlaces = sortByFavoritePlace(places);
+		setPlacesList(sortedPlaces);
+		updatePlacesLocalStorage(sortedPlaces);
+	};
+
+	// Return a place object based on its name
+	const findPlace = (placeName: string) => {
 		const selectedPlace = placesList.find((place) => place.name === placeName);
+		return selectedPlace;
+	};
 
-		if (selectedPlace) {
-			const filteredPlacesList = placesList.filter(
-				(place) => place.name !== placeName,
-			);
-			selectedPlace.isFavorite = !selectedPlace.isFavorite;
-
-			const places = [selectedPlace, ...filteredPlacesList];
-
-			setPlacesList(places);
-			updateUserPlacesStorage(places);
-		}
+	// Set the map center position
+	const setMapCenter = (coords: ICoordinates) => {
+		gMap?.panTo(coords);
 	};
 
 	return (
@@ -226,13 +286,15 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 				gMap,
 				selectedMarkers,
 				placesList,
-				initializePlaces,
+				initializePlacesFromList,
 				setGMap,
 				addPlaceToMap,
 				removePlaceFromMap,
+				findPlace,
 				createInfoWindow,
 				showUserLocation,
 				toggleFavorite,
+				setMapCenter,
 			}}
 		>
 			{children}

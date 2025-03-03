@@ -2,24 +2,33 @@ import { Crosshair2Icon, RulerHorizontalIcon } from "@radix-ui/react-icons";
 import { Box, Button, Flex, IconButton } from "@radix-ui/themes";
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { GMapContext } from "../../context/GMapContext/GMapContext";
+// -- Hooks import
 import useGoogleMapsScript from "../../hooks/useGoogleMapsScript";
 import useLocalStorage from "../../hooks/useLocalStorage";
+
+// -- Context and service import
+import { GMapContext } from "../../context/GMapContext/GMapContext";
+import geoService from "../../services/Geoservice.service";
 
 import type {
 	ICoordinates,
 	IGeolocationCoordinates,
 } from "../../interfaces/Coordinates.interface";
-
+// -- Interfaces and types import
 import type { IPlaceData } from "../../interfaces/Places.interface";
-import geoService from "../../services/Geoservice.service";
 import type {
 	T_GoogleDistanceMatrix,
 	T_GooglePolyline,
 } from "../../types/Google.types";
+
+// -- Components import
 import DialogForm from "../Shared/DialogForm/DialogForm";
 
 function GoogleMap() {
+	// -- Const variables
+	const CR_lat = 9.7489;
+	const CR_lng = -83.7534;
+
 	// -- Hooks variables
 	const [openPlaceForm, setOpenPlaceForm] = useState(false);
 
@@ -46,9 +55,8 @@ function GoogleMap() {
 	const {
 		gMap,
 		selectedMarkers,
-		initializePlaces,
+		initializePlacesFromList,
 		setGMap,
-		addPlaceToMap,
 		createInfoWindow,
 		showUserLocation,
 	} = useContext(GMapContext);
@@ -59,14 +67,18 @@ function GoogleMap() {
 		}
 	}, [googleMapsScriptLoaded]);
 
-	const loadGMaps = () => {
+	// Load every google maps script
+	const initiliazeGoogleMapScripts = () => {
 		const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 		loadGoogleSripts(apiKey);
 	};
 
+	// Load the map into the page
 	const initializeMap = async () => {
+		// Load every google maps library needed
 		await geoService.loadGoogleMapsLibrary();
 
+		// Get the map class
 		const MapObject = geoService.getMapObject();
 
 		if (!MapObject || !mapDivRef.current) {
@@ -74,138 +86,136 @@ function GoogleMap() {
 			return;
 		}
 
+		// Create the map object and add it to the page
 		const googleMapObj = new MapObject(mapDivRef.current, {
-			center: { lat: 9.9947165, lng: -84.1407853 },
-			zoom: 12,
+			center: { lat: CR_lat, lng: CR_lng },
+			zoom: 11,
 			mapId: "Mapa Proyecto",
 		});
 
+		// Set the click listener to add a new place
 		googleMapObj.addListener(
 			"click",
 			(mapsMouseEvent: google.maps.MapMouseEvent) => {
-				const lat = mapsMouseEvent.latLng?.lat();
-				const lng = mapsMouseEvent.latLng?.lng();
-
-				if (!lat || !lng) {
-					console.error("Null reference: lat or lng");
+				if (!mapsMouseEvent.latLng) {
+					console.error("Map error: Failed getting latLng on click");
 					return;
 				}
+				const lat = mapsMouseEvent.latLng.lat();
+				const lng = mapsMouseEvent.latLng.lng();
 
 				setSelectionCoord({ lat, lng });
 				setOpenPlaceForm(true);
 			},
 		);
 
+		// Save the google map object in the context
 		setGMap(googleMapObj);
 
+		// Create the polyline and distance matrix objects
 		mapPolylineRef.current = new google.maps.Polyline({ geodesic: true });
 		mapDistanceMatrixRef.current = new google.maps.DistanceMatrixService();
 
-		// Load saved user places
+		// Restore the user saved places into the map
 		const userPlaces = getStorageValue("user-places");
 		if (userPlaces) {
 			const userPlacesList: IPlaceData[] = JSON.parse(userPlaces);
-			initializePlaces(userPlacesList, googleMapObj);
+			initializePlacesFromList(userPlacesList, googleMapObj);
 		}
 	};
 
+	// Set the user location into the map
 	const handleMyLocation = async () => {
+		// If the userCoordinates are already set -> Pan to it
 		if (userCoordinates) {
 			gMap?.panTo(userCoordinates);
 			return;
 		}
 
-		const coordsRaw = getStorageValue("user-coordinates");
-		let coords: ICoordinates | null = null;
+		// Get the user coordinates from local storage
+		const coords = getStorageValue("user-coordinates");
+		let coordsFormatted!: ICoordinates;
 
-		if (!coordsRaw) {
+		// If coords -> Parse the coords
+		if (coords) {
+			coordsFormatted = JSON.parse(coords);
+		}
+		// If not -> Get the machine coords using the geoService
+		else {
 			const { latitude, longitude }: IGeolocationCoordinates =
 				await geoService.getUserCoordinates();
 
-			coords = {
+			coordsFormatted = {
 				lat: latitude,
 				lng: longitude,
 			};
-
-			writeStorageValue("user-coordinates", JSON.stringify(coords));
-		} else {
-			coords = JSON.parse(coordsRaw);
+			writeStorageValue("user-coordinates", JSON.stringify(coordsFormatted));
 		}
 
-		if (!gMap || !coords) {
-			console.error("Null reference: gMap or coords");
-			return;
-		}
-
-		setUserCoordinates(coords);
-
-		// addPlaceToMap({
-		// 	lat: coords.lat,
-		// 	lng: coords.lng,
-		// 	name: "Your position",
-		// });
-		showUserLocation(coords);
+		// Set the user coordinates on the map
+		setUserCoordinates(coordsFormatted);
+		showUserLocation(coordsFormatted);
 	};
 
+	// Calculate and show the distance between two selected markers
 	const handleDistanceCalculation = async () => {
-		if (
-			!selectedMarkers ||
-			!mapPolylineRef.current ||
-			!mapDistanceMatrixRef.current
-		) {
-			console.log("No markers are selected");
+		if (!selectedMarkers || selectedMarkers.current.length < 2) {
+			console.error("No markers are selected");
 			return;
 		}
-		if (selectedMarkers.current.length < 2) {
-			console.log("No enough markers are selected");
+		if (!mapPolylineRef.current || !mapDistanceMatrixRef.current) {
+			console.error("Null reference: mapPolylineRef or mapDistanceMatrixRef");
 			return;
 		}
+
+		// Remove the previous line from the map
 		mapPolylineRef.current.setMap(null);
 
-		const markers = selectedMarkers.current;
+		// Get the markers positions
+		const markersList = selectedMarkers.current;
+		const firstPosition = markersList[0].position as google.maps.LatLngLiteral;
+		const secondPosition = markersList[1].position as google.maps.LatLngLiteral;
 
-		const firstPosition = markers[0].position as google.maps.LatLngLiteral;
-		const secondPosition = markers[1].position as google.maps.LatLngLiteral;
-
-		if (!firstPosition || !secondPosition) {
-			console.log("Error raro");
-			return;
-		}
-
+		// Set the coords values for both markers
 		const coords = [
 			{ lat: firstPosition.lat, lng: firstPosition.lng },
 			{ lat: secondPosition.lat, lng: secondPosition.lng },
 		];
 
-		const origin = new google.maps.LatLng(firstPosition.lat, firstPosition.lng);
-		const destination = new google.maps.LatLng(
-			secondPosition.lat,
-			secondPosition.lng,
-		);
-
+		// Set the configuration request for the distance calculation
 		const distanceConfig: google.maps.DistanceMatrixRequest = {
-			destinations: [origin],
-			origins: [destination],
+			destinations: [firstPosition],
+			origins: [secondPosition],
 			travelMode: google.maps.TravelMode.DRIVING,
 		};
 
+		// Make the distance calculation
 		mapDistanceMatrixRef.current.getDistanceMatrix(
 			distanceConfig,
 			(response, status) => {
 				if (status === google.maps.DistanceMatrixStatus.OK && response) {
-					const { distance, duration } = response.rows[0].elements[0];
+					console.log("resp", response);
 
-					const distanceText = distance.text;
-					const durationText = duration.text;
+					// Get the distance and duration
+					const { distance, duration, status } = response.rows[0].elements[0];
 
-					createInfoWindow(
-						markers[0],
-						`Distance: ${distanceText}<br/>Duration: ${durationText}`,
-					);
+					let content = "";
+
+					if (status === google.maps.DistanceMatrixElementStatus.OK) {
+						const distanceText = distance.text;
+						const durationText = duration.text;
+						content = `Distance: ${distanceText}<br/>Duration: ${durationText}`;
+					} else {
+						content = "There is no route available";
+					}
+
+					// Create the InfoWindow for the distance and duration display
+					createInfoWindow(markersList[0], content);
 				}
 			},
 		);
 
+		// Set the line on the map
 		mapPolylineRef.current.setPath(coords);
 		mapPolylineRef.current.setMap(gMap);
 	};
@@ -234,7 +244,7 @@ function GoogleMap() {
 				</>
 			) : (
 				<Flex justify={"center"} align={"center"}>
-					<Button onClick={loadGMaps}>Load Map</Button>
+					<Button onClick={initiliazeGoogleMapScripts}>Load Map</Button>
 				</Flex>
 			)}
 		</>

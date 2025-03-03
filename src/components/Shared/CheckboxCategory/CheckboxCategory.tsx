@@ -1,5 +1,6 @@
 import { CheckboxGroup, Text } from "@radix-ui/themes";
 
+import { useEffect } from "react";
 import type { ICheckboxCategoryProps } from "./CheckboxCategory.interface";
 
 function CheckboxCategory({
@@ -13,6 +14,10 @@ function CheckboxCategory({
 	const handleChange = (values: string[]) => {
 		setSelectedAmenities(values);
 	};
+
+	useEffect(() => {
+		setSelectedAmenities([]);
+	}, [setSelectedAmenities]);
 
 	return (
 		<>

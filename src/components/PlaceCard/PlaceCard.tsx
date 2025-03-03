@@ -1,4 +1,4 @@
-import { StarFilledIcon, StarIcon, TrashIcon } from "@radix-ui/react-icons";
+import { StarFilledIcon, TrashIcon } from "@radix-ui/react-icons";
 import {
 	Badge,
 	Box,
@@ -8,23 +8,30 @@ import {
 	Inset,
 	Text,
 } from "@radix-ui/themes";
+import { useContext } from "react";
+
+import defaultPlaceImage from "../../assets/DefaultPlaceImage.jpg";
+import { GMapContext } from "../../context/GMapContext/GMapContext";
+import PlaceDialog from "../PlaceDialog/PlaceDialog";
 import type { IPlaceCard } from "./PlaceCard.interface";
 
-import { useEffect } from "react";
-import defaultPlaceImage from "../../assets/DefaultPlaceImage.jpg";
-import PlaceDialog from "../PlaceDialog/PlaceDialog";
+import style from "./PlaceCard.module.scss";
 
 function PlaceCard(props: IPlaceCard) {
 	const { placeData, handleRemovePlace } = props;
 
-	useEffect(() => {
-		console.log("placeData: ", placeData);
-	}, [placeData]);
+	const { setMapCenter } = useContext(GMapContext);
+
+	const handleSetMapPosition = () => {
+		const { lat, lng } = placeData;
+		setMapCenter({ lat, lng });
+	};
 
 	return (
 		<Box maxHeight={"300px"} maxWidth={"100%"}>
 			<Card style={{ height: "100%" }}>
 				<Flex direction={"column"} height={"100%"}>
+					{/* Card image inset */}
 					<Inset clip="padding-box" side="top" pb="current">
 						<img
 							src={placeData?.images?.[0] || defaultPlaceImage}
@@ -39,20 +46,29 @@ function PlaceCard(props: IPlaceCard) {
 						/>
 					</Inset>
 
+					{/* Card title */}
 					<Flex justify={"between"} align={"center"}>
-						<Text as="label" size="6" weight="bold">
+						<Text
+							as="label"
+							size="6"
+							weight="bold"
+							onClick={handleSetMapPosition}
+							className={style["card-title"]}
+						>
 							{placeData.name}
 						</Text>
 
 						{placeData.isFavorite ? <StarFilledIcon /> : <></>}
 					</Flex>
 
+					{/* Card category type badge */}
 					{placeData.category_type && (
 						<Box>
 							<Badge>{placeData.category_type}</Badge>
 						</Box>
 					)}
 
+					{/* Card description */}
 					{placeData.description && (
 						<Box>
 							<Text as="p" size="3" truncate>
@@ -60,6 +76,8 @@ function PlaceCard(props: IPlaceCard) {
 							</Text>
 						</Box>
 					)}
+
+					{/* Card lat and lng information */}
 					<Flex gap={"3"}>
 						<Text as="div" size="2">
 							Latitude: {placeData.lat}
@@ -68,6 +86,8 @@ function PlaceCard(props: IPlaceCard) {
 							Longitud: {placeData.lng}
 						</Text>
 					</Flex>
+
+					{/* Card buttons */}
 					<Flex mt={"2"} justify={"end"} align={"center"} gap={"3"}>
 						<PlaceDialog {...props} />
 						<IconButton

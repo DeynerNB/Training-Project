@@ -13,16 +13,21 @@ export interface IGMapProvider {
 
 export interface IGMapContext {
 	gMap: T_GoogleMap | null;
-	placesList: IPlace[];
-	selectedMarkers: RefObject<T_GoogleAdvMarker[]> | null;
-	initializePlaces: (places: IPlaceData[], map: T_GoogleMap) => void;
 	setGMap: Dispatch<SetStateAction<T_GoogleMap | null>>;
+	placesList: IPlace[];
+	initializePlacesFromList: (places: IPlaceData[], map: T_GoogleMap) => void;
 	addPlaceToMap: (placeData: IPlaceData, initialLoad?: boolean) => void;
 	removePlaceFromMap: (placeName: string) => void;
+	findPlace: (placeName: string) => IPlace | undefined;
 	createInfoWindow: (
 		marker: T_GoogleAdvMarker,
 		content: string,
 	) => T_GoogleInfoWindow | null;
+
+	selectedMarkers: RefObject<T_GoogleAdvMarker[]> | null;
+
 	showUserLocation: (coords: ICoordinates) => void;
 	toggleFavorite: (placeName: string) => void;
+
+	setMapCenter: (coords: ICoordinates) => void;
 }

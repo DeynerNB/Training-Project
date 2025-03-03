@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+// Set the google variable into the Window browser object
 declare global {
 	interface Window {
 		initMap: () => void;
@@ -7,16 +8,19 @@ declare global {
 	}
 }
 
+// Hook that manage all google scripts loading
 const useGoogleMapsScript = () => {
+	// Flag to indicate when the scripts are loaded
 	const [googleMapsScriptLoaded, setScriptLoaded] = useState(false);
 
+	// Flag to indicate when to start checking for script loading
 	const [checkScript, setCheckScript] = useState(false);
 
 	useEffect(() => {
 		if (checkScript) {
 			// Check every 0.1s if the importLibrary is available
 			const checkGoogleMaps = setInterval(() => {
-				// if (window.google?.maps?.importLibrary) {
+				// If the maps class is available -> everything is ready to use
 				if (window.google?.maps) {
 					clearInterval(checkGoogleMaps);
 					setScriptLoaded(true);
@@ -28,7 +32,9 @@ const useGoogleMapsScript = () => {
 		}
 	}, [checkScript]);
 
+	// Load the initial google maps script
 	const loadGoogleSripts = (apiKey: string) => {
+		// If the google class is loaded -> avoid loading it again
 		if (window.google) {
 			setScriptLoaded(true);
 			return;

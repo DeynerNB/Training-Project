@@ -1,0 +1,7 @@
+.card-title {
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

@@ -1,36 +1,45 @@
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { useContext, useEffect, useState } from "react";
-import PlaceCard from "../PlaceCard/PlaceCard";
-
-import { GMapContext } from "../../context/GMapContext/GMapContext";
-import type { IPlace } from "../../interfaces/Places.interface";
 
 import { FilterContext } from "../../context/FilterContext/FilterContext";
+// Context import
+import { GMapContext } from "../../context/GMapContext/GMapContext";
+
+// Interface import
+import type { IPlace } from "../../interfaces/Places.interface";
+
+// Component and style imports
+import PlaceCard from "../PlaceCard/PlaceCard";
 import style from "./PlacesList.module.scss";
 
 function PlacesList() {
+	// -- Context variables
 	const { placesList, removePlaceFromMap } = useContext(GMapContext);
 
 	const { selectedFilters, searchActive, setSearchActive } =
 		useContext(FilterContext);
 
+	// -- State variables
 	const [displayList, setDisplayList] = useState<IPlace[]>([...placesList]);
 
+	// -- Handlers functions
 	const handleRemovePlace = (markerId: string) => {
 		removePlaceFromMap(markerId);
 	};
 
+	// -- UseEffects functions
+	// Update the display list
 	useEffect(() => {
 		setDisplayList([...placesList]);
 	}, [placesList]);
 
+	// Update the display list based on filters options
 	useEffect(() => {
 		if (searchActive) {
 			let currentList = [...placesList];
 
 			// Filter by search
 			if (selectedFilters.searchValue !== "") {
-				console.log("Filter by search");
 				currentList = currentList.filter(
 					(place) => place.name === selectedFilters.searchValue,
 				);
@@ -41,21 +50,20 @@ function PlacesList() {
 			}
 			// Filter by type
 			if (selectedFilters.type && (selectedFilters.type as string) !== "all") {
-				console.log("Filter by search");
 				currentList = currentList.filter(
 					(place) => place.category_type === selectedFilters.type,
 				);
 			}
 			// Filter by amenities
 			if (selectedFilters.ammenities.length > 0) {
-				console.log("Filter by amenities");
 				currentList = currentList.filter((place) =>
 					place.category_ammenities?.some((amenity) =>
 						selectedFilters.ammenities.includes(amenity.label),
 					),
 				);
 			}
-			console.log("currentList: ", currentList);
+
+			// Update the display list
 			setDisplayList([...currentList]);
 			setSearchActive(false);
 		}
@@ -63,6 +71,7 @@ function PlacesList() {
 
 	return (
 		<>
+			{/* If no places yet -> Display a message */}
 			{displayList.length === 0 ? (
 				<Box>
 					<Flex

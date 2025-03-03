@@ -1,3 +1,4 @@
+import { Cross1Icon } from "@radix-ui/react-icons";
 import {
 	Box,
 	Button,
@@ -12,21 +13,27 @@ import { Form } from "radix-ui";
 import { useContext, useEffect, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 
+// Context imports
 import { GMapContext } from "../../../context/GMapContext/GMapContext";
 
+// Interface imports
 import type { IPlaceData } from "../../../interfaces/Places.interface";
-import {
-	type IAmenities,
-	availableAmenities,
-} from "../../../utils/FiltersOptions.util";
-import { E_Categories, E_type } from "../../../utils/FiltersOptions.util";
-
 import type { Inputs } from "./DialogForm.interface";
 import type { IDialogForm } from "./DialogForm.interface";
 
-import { Cross1Icon } from "@radix-ui/react-icons";
+// Utils imports
+import {
+	E_Categories,
+	E_type,
+	type IAmenities,
+	availableAmenities,
+} from "../../../utils/FiltersOptions.util";
+
+// Components imports
 import CheckboxCategory from "../CheckboxCategory/CheckboxCategory";
 import SelectCategory from "../SelectCategory/SelectCategory";
+
+// Style import
 import style from "./DialogForm.module.scss";
 
 function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
@@ -37,6 +44,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 	const {
 		register,
 		handleSubmit,
+		setError,
 		getValues,
 		setValue,
 		clearErrors,
@@ -45,9 +53,9 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 	} = useForm<Inputs>();
 
 	// Function to add a new place to the map
-	const { addPlaceToMap } = useContext(GMapContext);
+	const { addPlaceToMap, findPlace } = useContext(GMapContext);
 
-	// Variables to store all images url uploaded
+	// Variable to store all images url uploaded
 	const [placeImagesURLs, setPlaceImagesURLs] = useState<string[]>([]);
 
 	// Variable to store all selected amenities
@@ -59,13 +67,25 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 		setValue("lat", coords.lat.toFixed(7));
 		setValue("lng", coords.lng.toFixed(7));
 		setValue("categoryType", Object.values(E_type)[0]);
+		setValue("description", "");
+		setValue("imageURL", "");
 	}, [coords, setValue]);
 
 	// Handle the place information to be added
-	const onSubmit: SubmitHandler<Inputs> = (data) => {
+	const onSubmit: SubmitHandler<Inputs> = (data, e) => {
 		const { placeName, lat, lng, description, categoryType } = data;
 
 		const ammenitiesObject: IAmenities[] = [];
+
+		if (findPlace(placeName)) {
+			setError("placeName", {
+				type: "custom",
+				message: "Cannot set the same name as another place",
+			});
+
+			e?.preventDefault();
+			return;
+		}
 
 		for (const ammenityKey of selectedAmenities) {
 			ammenitiesObject.push(availableAmenities[ammenityKey]);
@@ -81,8 +101,10 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 			category_ammenities: [...ammenitiesObject],
 			isFavorite: false,
 		};
+
 		addPlaceToMap(placeData);
 		setOpenPlaceForm(false);
+		setPlaceImagesURLs([]);
 	};
 
 	// Handle the image input
@@ -95,9 +117,11 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 			!placeImagesURLs.includes(imageURL)
 		) {
 			setPlaceImagesURLs([...placeImagesURLs, imageURL]);
+			setValue("imageURL", "");
 		}
 	};
 
+	// Handle remove image
 	const handleImageRemove = (url: string) => {
 		setPlaceImagesURLs(placeImagesURLs.filter((imageUrl) => imageUrl !== url));
 	};
@@ -136,9 +160,14 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 										Name
 									</Form.Label>
 									{/* Error message when name is not provided */}
-									{errors.placeName && (
+									{errors.placeName?.type === "required" && (
 										<Form.Message className={style["label--invalid"]}>
 											Please enter the name of the place.
+										</Form.Message>
+									)}
+									{errors.placeName?.type === "custom" && (
+										<Form.Message className={style["label--invalid"]}>
+											Cannot set the same name as another place.
 										</Form.Message>
 									)}
 								</Flex>
@@ -228,13 +257,17 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 										style={{ width: "100%" }}
 										{...register("imageURL", { required: false })}
 									/>
-									<Button type="button" onClick={handleAddImageURL}>
+									<Button
+										type="button"
+										onClick={handleAddImageURL}
+										disabled={placeImagesURLs.length >= 3}
+									>
 										Add
 									</Button>
 								</Flex>
 							</Form.Field>
 
-							{/* --> Input: Place categories */}
+							{/* --> Input: Place type */}
 							<SelectCategory
 								labelValue="Place type"
 								filter_title={E_Categories.categoryType}
@@ -242,6 +275,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 								control={control}
 							/>
 
+							{/* --> Input: Place amenities */}
 							<CheckboxCategory
 								labelValue="Amenities"
 								filterTitle={E_Categories.categoryAmenities}
@@ -252,22 +286,26 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 						</Grid>
 
 						{/* --> Images Grid */}
-						<Grid rows={"3"} py={"2"} gap={"2"}>
-							{placeImagesURLs.map((url: string) => (
-								<Box key={Math.random().toString()} position={"relative"}>
-									<img
-										style={{ height: "100%", objectFit: "cover" }}
-										src={url}
-										alt=""
-									/>
-									<Box position={"absolute"} top={"1"} right={"1"}>
-										<IconButton onClick={() => handleImageRemove(url)}>
-											<Cross1Icon />
-										</IconButton>
+						{placeImagesURLs.length <= 0 ? (
+							<></>
+						) : (
+							<Grid rows={"3"} py={"2"} gap={"2"}>
+								{placeImagesURLs.map((url: string) => (
+									<Box key={Math.random().toString()} position={"relative"}>
+										<img
+											style={{ height: "100%", objectFit: "cover" }}
+											src={url}
+											alt=""
+										/>
+										<Box position={"absolute"} top={"1"} right={"1"}>
+											<IconButton onClick={() => handleImageRemove(url)}>
+												<Cross1Icon />
+											</IconButton>
+										</Box>
 									</Box>
-								</Box>
-							))}
-						</Grid>
+								))}
+							</Grid>
+						)}
 					</Grid>
 
 					{/* Submit place */}

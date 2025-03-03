@@ -1,5 +1,5 @@
+import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {
-	Box,
 	Button,
 	CheckboxGroup,
 	Flex,
@@ -10,26 +10,27 @@ import {
 	Text,
 	TextField,
 } from "@radix-ui/themes";
-
-import { useContext, useRef } from "react";
-import { FilterContext } from "../../context/FilterContext/FilterContext";
-import { E_type } from "../../utils/FiltersOptions.util";
-
 import { Accordion } from "radix-ui";
-import { availableAmenities } from "../../utils/FiltersOptions.util";
+import { useContext, useRef } from "react";
 
-import { ChevronDownIcon } from "@radix-ui/react-icons";
+import { FilterContext } from "../../context/FilterContext/FilterContext";
+import { E_type, availableAmenities } from "../../utils/FiltersOptions.util";
+
 import style from "./OptionsPanel.module.scss";
 
 function OptionsPanel() {
+	// Set a list of available place types
 	const availableTypes = Object.values(E_type);
 
+	// -- Context variables
 	const { setSelectedFilters, setSearchActive } = useContext(FilterContext);
 
+	// -- Ref variables
 	const searchInputRef = useRef<HTMLInputElement | null>(null);
 
-	const showFavoriteRef = useRef<boolean>(false);
+	const switchFavoritePlacesRef = useRef<boolean>(false);
 
+	// -- Handlers functions
 	const handleTypeSelection = (value: E_type) => {
 		setSelectedFilters((s) => ({ ...s, type: value }));
 	};
@@ -39,14 +40,14 @@ function OptionsPanel() {
 	};
 
 	const handleToggleFavorite = () => {
-		showFavoriteRef.current = !showFavoriteRef.current;
+		switchFavoritePlacesRef.current = !switchFavoritePlacesRef.current;
 	};
 
 	const handleSearch = () => {
 		setSelectedFilters((s) => ({
 			...s,
 			searchValue: searchInputRef.current?.value || "",
-			showFavorites: showFavoriteRef.current,
+			showFavorites: switchFavoritePlacesRef.current,
 		}));
 		setSearchActive(true);
 	};
@@ -68,6 +69,7 @@ function OptionsPanel() {
 
 			<Separator size={"4"} />
 
+			{/* Filters accordion */}
 			<Accordion.Root
 				type="single"
 				onValueChange={handleResetFilters}
