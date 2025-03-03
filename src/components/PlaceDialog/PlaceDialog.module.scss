@@ -6,12 +6,15 @@
     &::after {
         content: "";
         position: absolute;
-        top: 0;
+        bottom: 0;
+        left: 0;
 
         width: 100%;
-        height: 100%;
+        height: 100px;
 
-        box-shadow: 0 -200px 47px -102px rgba(0, 0, 0, 0.75) inset;
+        z-index: 10;
+        background: rgb(255, 255, 255);
+        background: linear-gradient(180deg, #ffffff00 0%, #5e5e5e 100%);
     }
 }
 
@@ -19,8 +22,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-
-    box-shadow: 20px black;
 }
 
 .place-overlay {

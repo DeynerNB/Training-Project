@@ -17,6 +17,11 @@ import type { IPlaceDialogProps } from "./PlaceDialog.interface";
 
 import style from "./PlaceDialog.module.scss";
 
+import { Navigation } from "swiper/modules";
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
+
 function PlaceDialog({ placeData }: IPlaceDialogProps) {
 	// Function to change the favorite state of a place
 	const { toggleFavorite } = useContext(GMapContext);
@@ -41,15 +46,39 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 			<Dialog.Content className={style["dialog-container"]}>
 				{/* Image and name of the place */}
 				<Box
-					className={style["place-image-container"]}
 					position={"relative"}
 					height={"300px"}
+					className={style["place-image-container"]}
 				>
-					<img
-						className={style["place-image"]}
-						src={placeData.images?.[0] || defaultPlaceImage}
-						alt={placeData.name}
-					/>
+					<Swiper
+						modules={[Navigation]}
+						spaceBetween={50}
+						navigation
+						slidesPerView={1}
+						onSlideChange={() => console.log("slide change")}
+						onSwiper={(swiper) => console.log(swiper)}
+						style={{ height: "100%" }}
+					>
+						{placeData.images && placeData.images.length > 0 ? (
+							placeData.images?.map((imageUrl) => (
+								<SwiperSlide key={Math.random()}>
+									<img
+										className={style["place-image"]}
+										src={imageUrl}
+										alt={placeData.name}
+									/>
+								</SwiperSlide>
+							))
+						) : (
+							<SwiperSlide>
+								<img
+									className={style["place-image"]}
+									src={defaultPlaceImage}
+									alt={placeData.name}
+								/>
+							</SwiperSlide>
+						)}
+					</Swiper>
 					{/* Name and favorite button container */}
 					<Flex
 						width={"100%"}
@@ -58,9 +87,11 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						className={`${style["place-title"]} ${style["place-overlay"]}`}
 						justify={"between"}
 						align={"center"}
-						px={"3"}
+						px={"4"}
 					>
-						<Dialog.Title size={"7"}>{placeData.name}</Dialog.Title>
+						<Dialog.Title size={"7"} style={{ textShadow: "0 0 10px #000000" }}>
+							{placeData.name}
+						</Dialog.Title>
 						<IconButton variant={"ghost"} onClick={handleToggleFavorite}>
 							{favoriteIcon ? (
 								<HeartFilledIcon className={"default-icon favorite-icon"} />
@@ -69,7 +100,6 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 							)}
 						</IconButton>
 					</Flex>
-
 					{/* Dialog Close button */}
 					<Box
 						position={"absolute"}
@@ -78,7 +108,7 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						className={style["place-overlay"]}
 					>
 						<Dialog.Close style={{ placeSelf: "end" }}>
-							<IconButton color={"ruby"} variant={"ghost"}>
+							<IconButton color={"ruby"} variant={"surface"}>
 								<Cross1Icon />
 							</IconButton>
 						</Dialog.Close>

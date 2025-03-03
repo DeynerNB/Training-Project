@@ -6,6 +6,9 @@ import PlacesList from "./components/PlacesList/PlacesList";
 import { FilterProvider } from "./context/FilterContext/FilterContext";
 import { GMapProvider } from "./context/GMapContext/GMapContext";
 
+// Import Swiper styles
+import "swiper/swiper-bundle.css";
+
 function App() {
 	const { width } = useWindowSize();
 
