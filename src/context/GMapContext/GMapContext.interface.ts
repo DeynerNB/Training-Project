@@ -31,3 +31,9 @@ export interface IGMapContext {
 
 	setMapCenter: (coords: ICoordinates) => void;
 }
+
+export interface IPinStyle {
+	background: string;
+	borderColor?: string;
+	glyphColor?: string;
+}

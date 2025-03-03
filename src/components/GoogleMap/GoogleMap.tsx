@@ -34,6 +34,8 @@ function GoogleMap() {
 	const CR_lng = -83.7534;
 
 	// -- Hooks variables
+	const [showDistancePanel, setShowDistancePanel] = useState(false);
+
 	const [openPlaceForm, setOpenPlaceForm] = useState(false);
 
 	const [userCoordinates, setUserCoordinates] = useState<ICoordinates>();
@@ -191,6 +193,8 @@ function GoogleMap() {
 			travelMode: google.maps.TravelMode.DRIVING,
 		};
 
+		setShowDistancePanel(true);
+
 		directionServiceRef.current.route(request, (result, status) => {
 			let content = "";
 			if (status === "OK" && result) {
@@ -229,14 +233,18 @@ function GoogleMap() {
 							</IconButton>
 						</Flex>
 
-						<Box
-							position={"absolute"}
-							bottom={"2"}
-							left={"2"}
-							p={"2"}
-							ref={directionPanelRef}
-							className={style["distance-panel"]}
-						/>
+						{showDistancePanel ? (
+							<Box
+								position={"absolute"}
+								bottom={"2"}
+								left={"2"}
+								p={"2"}
+								ref={directionPanelRef}
+								className={style["distance-panel"]}
+							/>
+						) : (
+							<></>
+						)}
 					</Box>
 
 					<DialogForm

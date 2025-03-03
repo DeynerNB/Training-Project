@@ -14,13 +14,20 @@ import { Accordion } from "radix-ui";
 import { useContext, useRef } from "react";
 
 import { FilterContext } from "../../context/FilterContext/FilterContext";
-import { E_type, availableAmenities } from "../../utils/FiltersOptions.util";
+import {
+	E_Budget,
+	E_type,
+	availableAmenities,
+} from "../../utils/FiltersOptions.util";
 
 import style from "./OptionsPanel.module.scss";
 
 function OptionsPanel() {
 	// Set a list of available place types
 	const availableTypes = Object.values(E_type);
+
+	// Set a list of available place budgets
+	const availableBudgets = Object.values(E_Budget);
 
 	// -- Context variables
 	const { setSelectedFilters, setSearchActive } = useContext(FilterContext);
@@ -33,6 +40,10 @@ function OptionsPanel() {
 	// -- Handlers functions
 	const handleTypeSelection = (value: E_type) => {
 		setSelectedFilters((s) => ({ ...s, type: value }));
+	};
+
+	const handleBudgetSelection = (value: E_Budget) => {
+		setSelectedFilters((s) => ({ ...s, budget: value }));
 	};
 
 	const handleAmmenitiesSelection = (values: string[]) => {
@@ -104,6 +115,25 @@ function OptionsPanel() {
 									<Select.Group>
 										<Select.Item value={"all"}>All</Select.Item>
 										{availableTypes.map((valueType) => (
+											<Select.Item key={valueType} value={valueType}>
+												{valueType}
+											</Select.Item>
+										))}
+									</Select.Group>
+								</Select.Content>
+							</Select.Root>
+
+							{/* Place Budget filter */}
+							<Text as="label">Place budget</Text>
+							<Select.Root
+								onValueChange={handleBudgetSelection}
+								defaultValue="all"
+							>
+								<Select.Trigger />
+								<Select.Content>
+									<Select.Group>
+										<Select.Item value={"all"}>All</Select.Item>
+										{availableBudgets.map((valueType) => (
 											<Select.Item key={valueType} value={valueType}>
 												{valueType}
 											</Select.Item>

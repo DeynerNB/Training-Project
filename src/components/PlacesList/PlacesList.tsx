@@ -38,6 +38,8 @@ function PlacesList() {
 		if (searchActive) {
 			let currentList = [...placesList];
 
+			console.log("selectedFilters: ", selectedFilters);
+
 			// Filter by search
 			if (selectedFilters.searchValue !== "") {
 				currentList = currentList.filter(
@@ -52,6 +54,15 @@ function PlacesList() {
 			if (selectedFilters.type && (selectedFilters.type as string) !== "all") {
 				currentList = currentList.filter(
 					(place) => place.category_type === selectedFilters.type,
+				);
+			}
+			// Filter by budget
+			if (
+				selectedFilters.budget &&
+				(selectedFilters.budget as string) !== "all"
+			) {
+				currentList = currentList.filter(
+					(place) => place.categoryBudget === selectedFilters.budget,
 				);
 			}
 			// Filter by amenities

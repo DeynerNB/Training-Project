@@ -132,9 +132,14 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 							<Text as="p">{placeData.categoryBudget}</Text>
 
 							{/* Amenities */}
-							<Text as="span" weight={"medium"}>
-								Amenities:
-							</Text>
+							{placeData.category_ammenities?.length &&
+							placeData.category_ammenities?.length > 0 ? (
+								<Text as="span" weight={"medium"}>
+									Amenities:
+								</Text>
+							) : (
+								<></>
+							)}
 							{placeData.category_ammenities?.map((ammenity) => (
 								<Flex gap={"2"} key={ammenity.label}>
 									<img

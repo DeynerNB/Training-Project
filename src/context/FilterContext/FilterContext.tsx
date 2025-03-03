@@ -10,6 +10,7 @@ const defaultValue: IFilterContext = {
 	selectedFilters: {
 		searchValue: "",
 		type: null,
+		budget: null,
 		ammenities: [],
 		showFavorites: false,
 	},
@@ -26,6 +27,7 @@ export const FilterProvider = ({ children }: IFilterProvider) => {
 	const [selectedFilters, setSelectedFilters] = useState<IFilterOptions>({
 		searchValue: "",
 		type: null,
+		budget: null,
 		ammenities: [],
 		showFavorites: false,
 	});
