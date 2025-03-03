@@ -1,4 +1,4 @@
-import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
+import { Cross1Icon, HeartFilledIcon, HeartIcon } from "@radix-ui/react-icons";
 import {
 	Badge,
 	Box,
@@ -35,7 +35,7 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 		<Dialog.Root>
 			{/* Button trigger to open dialog */}
 			<Dialog.Trigger>
-				<Button variant="ghost">View details</Button>
+				<Button variant="outline">View details</Button>
 			</Dialog.Trigger>
 
 			<Dialog.Content className={style["dialog-container"]}>
@@ -55,7 +55,7 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						width={"100%"}
 						position={"absolute"}
 						bottom={"0"}
-						className={style["place-title"]}
+						className={`${style["place-title"]} ${style["place-overlay"]}`}
 						justify={"between"}
 						align={"center"}
 						px={"3"}
@@ -63,16 +63,30 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						<Dialog.Title size={"7"}>{placeData.name}</Dialog.Title>
 						<IconButton variant={"ghost"} onClick={handleToggleFavorite}>
 							{favoriteIcon ? (
-								<StarFilledIcon className={"default-icon favorite-icon"} />
+								<HeartFilledIcon className={"default-icon favorite-icon"} />
 							) : (
-								<StarIcon className={"default-icon favorite-icon"} />
+								<HeartIcon className={"default-icon favorite-icon"} />
 							)}
 						</IconButton>
 					</Flex>
+
+					{/* Dialog Close button */}
+					<Box
+						position={"absolute"}
+						top={"4"}
+						right={"4"}
+						className={style["place-overlay"]}
+					>
+						<Dialog.Close style={{ placeSelf: "end" }}>
+							<IconButton color={"ruby"} variant={"ghost"}>
+								<Cross1Icon />
+							</IconButton>
+						</Dialog.Close>
+					</Box>
 				</Box>
 
 				{/* Other information */}
-				<Box p={"3"}>
+				<Box px={"5"} py={"4"}>
 					<Flex>
 						<Flex direction={"column"} gap={"2"} style={{ flexGrow: 1 }}>
 							{/* Description */}
@@ -120,15 +134,6 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 							</Badge>
 						</Box>
 					</Flex>
-
-					{/* Dialog Close button */}
-					<Box mt={"2"} style={{ textAlign: "end" }}>
-						<Dialog.Close style={{ placeSelf: "end" }}>
-							<Button color={"ruby"} variant={"surface"}>
-								Close
-							</Button>
-						</Dialog.Close>
-					</Box>
 				</Box>
 			</Dialog.Content>
 		</Dialog.Root>

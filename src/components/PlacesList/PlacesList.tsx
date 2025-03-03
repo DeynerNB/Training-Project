@@ -92,10 +92,10 @@ function PlacesList() {
 				</Box>
 			) : (
 				<Grid
-					p={"3"}
+					py={"3"}
 					gap={"3"}
 					overflowY={"scroll"}
-					rows={"repeat(auto-fill, 300px)"}
+					rows={"repeat(auto-fill, 350px)"}
 				>
 					{displayList.map((place: IPlace) => {
 						return (

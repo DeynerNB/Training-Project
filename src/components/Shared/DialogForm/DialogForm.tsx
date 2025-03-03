@@ -153,7 +153,17 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 
 				<Form.Root onSubmit={handleSubmit(onSubmit)}>
 					<Grid
-						columns={placeImagesURLs.length > 0 ? "1fr 200px" : "1fr"}
+						columns={{
+							initial: "1",
+							sm: placeImagesURLs.length > 0 ? "1fr 200px" : "1fr",
+						}}
+						rows={{
+							initial:
+								placeImagesURLs.length > 0
+									? "1fr minmax(min-content, 200px)"
+									: "1",
+							sm: "1",
+						}}
 						gap={"3"}
 					>
 						<Grid gap={"3"}>
@@ -183,7 +193,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 								</Form.Control>
 							</Form.Field>
 
-							<Grid columns={"2"} gapX={"3"}>
+							<Grid columns={{ initial: "auto", xs: "2" }} gapX={"3"}>
 								{/* --> Input: Lat Place */}
 								<Form.Field name="lat">
 									<Form.Label className={style["label--required"]}>
@@ -306,7 +316,17 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 						{placeImagesURLs.length <= 0 ? (
 							<></>
 						) : (
-							<Grid rows={"3"} py={"2"} gap={"2"}>
+							<Grid
+								// rows={{ initial: "repeat(auto, min-content)", sm: "3" }}
+								// columns={{ initial: "2", sm: "1" }}
+								maxHeight={{ initial: "200px", sm: "100%" }}
+								// width={"auto"}
+								overflow={"auto"}
+								rows={{ initial: "1", sm: "3" }}
+								columns={{ initial: "repeat(3, max-content)", sm: "1" }}
+								py={"2"}
+								gap={"2"}
+							>
 								{placeImagesURLs.map((url: string) => (
 									<Box key={Math.random().toString()} position={"relative"}>
 										<img

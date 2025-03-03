@@ -1,4 +1,8 @@
-import { StarFilledIcon, TrashIcon } from "@radix-ui/react-icons";
+import {
+	Crosshair2Icon,
+	HeartFilledIcon,
+	TrashIcon,
+} from "@radix-ui/react-icons";
 import {
 	Badge,
 	Box,
@@ -15,8 +19,6 @@ import { GMapContext } from "../../context/GMapContext/GMapContext";
 import PlaceDialog from "../PlaceDialog/PlaceDialog";
 import type { IPlaceCard } from "./PlaceCard.interface";
 
-import style from "./PlaceCard.module.scss";
-
 function PlaceCard(props: IPlaceCard) {
 	const { placeData, handleRemovePlace } = props;
 
@@ -28,7 +30,7 @@ function PlaceCard(props: IPlaceCard) {
 	};
 
 	return (
-		<Box maxHeight={"300px"} maxWidth={"100%"}>
+		<Box maxHeight={"350px"} maxWidth={"100%"} position={"relative"}>
 			<Card style={{ height: "100%" }}>
 				<Flex direction={"column"} height={"100%"}>
 					{/* Card image inset */}
@@ -46,36 +48,36 @@ function PlaceCard(props: IPlaceCard) {
 						/>
 					</Inset>
 
+					{placeData.isFavorite ? (
+						<Box position={"absolute"} top={"3"} right={"3"}>
+							<HeartFilledIcon className="default-icon favorite-icon" />
+						</Box>
+					) : (
+						<></>
+					)}
+
 					{/* Card title */}
-					<Flex justify={"between"} align={"center"}>
+					<Flex justify={"between"}>
 						<Text
 							as="label"
 							size="6"
 							weight="bold"
-							onClick={handleSetMapPosition}
-							className={style["card-title"]}
+							// className={style["card-title"]}
+							color={"cyan"}
 						>
 							{placeData.name}
 						</Text>
 
-						{placeData.isFavorite ? (
-							<StarFilledIcon className="default-icon favorite-icon" />
-						) : (
-							<></>
-						)}
-					</Flex>
-
-					{/* Card category type badge */}
-					{placeData.category_type && (
+						{/* Card category type badge */}
 						<Box my={"1"}>
 							<Badge>{placeData.category_type}</Badge>
 						</Box>
-					)}
+					</Flex>
 
 					{/* Card description */}
 					{placeData.description && (
 						<Box>
-							<Text as="p" size="3" truncate>
+							<Text as="p" size="3" color={"gray"} truncate>
 								{placeData.description}
 							</Text>
 						</Box>
@@ -83,24 +85,32 @@ function PlaceCard(props: IPlaceCard) {
 
 					{/* Card lat and lng information */}
 					<Flex gap={"3"}>
-						<Text as="div" size="2">
+						<Text as="div" size="2" color={"gray"}>
 							Latitude: {placeData.lat}
 						</Text>
-						<Text as="div" size="2">
+						<Text as="div" size="2" color={"gray"}>
 							Longitud: {placeData.lng}
 						</Text>
 					</Flex>
 
 					{/* Card buttons */}
-					<Flex mt={"2"} justify={"between"} align={"center"} gap={"3"}>
+					<Flex mt={"3"} justify={"between"} align={"center"} gap={"3"}>
 						<PlaceDialog {...props} />
-						<IconButton
-							size={"3"}
-							variant={"ghost"}
-							onClick={() => handleRemovePlace(placeData.name)}
-						>
-							<TrashIcon color={"red"} className="default-icon" />
-						</IconButton>
+						<Flex gap={"3"} align={"center"}>
+							<IconButton size={"3"} variant={"ghost"}>
+								<Crosshair2Icon
+									className="default-icon"
+									onClick={handleSetMapPosition}
+								/>
+							</IconButton>
+							<IconButton
+								size={"3"}
+								variant={"ghost"}
+								onClick={() => handleRemovePlace(placeData.name)}
+							>
+								<TrashIcon color={"red"} className="default-icon" />
+							</IconButton>
+						</Flex>
 					</Flex>
 				</Flex>
 			</Card>

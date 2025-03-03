@@ -1,3 +1,6 @@
-.map-container {
-    border-radius: 0.7rem;
+@use "../../styles/shared/variables" as v;
+
+.distance-panel {
+    background-color: v.$white;
+    border-radius: 0.4rem;
 }

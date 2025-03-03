@@ -17,12 +17,16 @@ import type {
 // -- Interfaces and types import
 import type { IPlaceData } from "../../interfaces/Places.interface";
 import type {
-	T_GoogleDistanceMatrix,
-	T_GooglePolyline,
+	T_GoogleDirectionRender,
+	T_GoogleDirectionService,
 } from "../../types/Google.types";
 
 // -- Components import
 import DialogForm from "../Shared/DialogForm/DialogForm";
+
+import { googleMapStyle } from "./GoogleMap.interface";
+// -- Styles import
+import style from "./GoogleMap.module.scss";
 
 function GoogleMap() {
 	// -- Const variables
@@ -47,9 +51,11 @@ function GoogleMap() {
 	// -- Ref hooks variables
 	const mapDivRef = useRef<HTMLDivElement>(null);
 
-	const mapPolylineRef = useRef<T_GooglePolyline>(null);
+	const directionPanelRef = useRef<HTMLDivElement>(null);
 
-	const mapDistanceMatrixRef = useRef<T_GoogleDistanceMatrix>(null);
+	const directionRenderRef = useRef<T_GoogleDirectionRender>(null);
+
+	const directionServiceRef = useRef<T_GoogleDirectionService>(null);
 
 	// --- Context variables
 	const {
@@ -57,7 +63,6 @@ function GoogleMap() {
 		selectedMarkers,
 		initializePlacesFromList,
 		setGMap,
-		createInfoWindow,
 		showUserLocation,
 	} = useContext(GMapContext);
 
@@ -91,6 +96,8 @@ function GoogleMap() {
 			center: { lat: CR_lat, lng: CR_lng },
 			zoom: 11,
 			mapId: "Mapa Proyecto",
+			styles: googleMapStyle,
+			disableDefaultUI: true,
 		});
 
 		// Set the click listener to add a new place
@@ -112,9 +119,14 @@ function GoogleMap() {
 		// Save the google map object in the context
 		setGMap(googleMapObj);
 
-		// Create the polyline and distance matrix objects
-		mapPolylineRef.current = new google.maps.Polyline({ geodesic: true });
-		mapDistanceMatrixRef.current = new google.maps.DistanceMatrixService();
+		// Create a directions objects
+		const directionRender = new google.maps.DirectionsRenderer();
+		const directionService = new google.maps.DirectionsService();
+
+		directionRender.setMap(googleMapObj);
+		// directionRender.setPanel(directionPanelRef.current);
+		directionRenderRef.current = directionRender;
+		directionServiceRef.current = directionService;
 
 		// Restore the user saved places into the map
 		const userPlaces = getStorageValue("user-places");
@@ -163,61 +175,43 @@ function GoogleMap() {
 			console.error("No markers are selected");
 			return;
 		}
-		if (!mapPolylineRef.current || !mapDistanceMatrixRef.current) {
-			console.error("Null reference: mapPolylineRef or mapDistanceMatrixRef");
+		if (!directionServiceRef.current || !directionRenderRef.current) {
+			console.error("Null reference: directionServiceRef");
 			return;
 		}
 
-		// Remove the previous line from the map
-		mapPolylineRef.current.setMap(null);
-
-		// Get the markers positions
+		// // Get the markers positions
 		const markersList = selectedMarkers.current;
 		const firstPosition = markersList[0].position as google.maps.LatLngLiteral;
 		const secondPosition = markersList[1].position as google.maps.LatLngLiteral;
 
-		// Set the coords values for both markers
-		const coords = [
-			{ lat: firstPosition.lat, lng: firstPosition.lng },
-			{ lat: secondPosition.lat, lng: secondPosition.lng },
-		];
-
-		// Set the configuration request for the distance calculation
-		const distanceConfig: google.maps.DistanceMatrixRequest = {
-			destinations: [firstPosition],
-			origins: [secondPosition],
+		const request = {
+			origin: firstPosition,
+			destination: secondPosition,
 			travelMode: google.maps.TravelMode.DRIVING,
 		};
 
-		// Make the distance calculation
-		mapDistanceMatrixRef.current.getDistanceMatrix(
-			distanceConfig,
-			(response, status) => {
-				if (status === google.maps.DistanceMatrixStatus.OK && response) {
-					console.log("resp", response);
+		directionServiceRef.current.route(request, (result, status) => {
+			let content = "";
+			if (status === "OK" && result) {
+				directionRenderRef.current?.setDirections(result);
 
-					// Get the distance and duration
-					const { distance, duration, status } = response.rows[0].elements[0];
+				const { distance, duration } = result.routes[0].legs[0];
 
-					let content = "";
-
-					if (status === google.maps.DistanceMatrixElementStatus.OK) {
-						const distanceText = distance.text;
-						const durationText = duration.text;
-						content = `Distance: ${distanceText}<br/>Duration: ${durationText}`;
-					} else {
-						content = "There is no route available";
-					}
-
-					// Create the InfoWindow for the distance and duration display
-					createInfoWindow(markersList[0], content);
+				if (directionPanelRef.current) {
+					content = `
+					<p>Distance: ${distance?.text}</p>
+					<p>Duration: ${duration?.text}</p>
+					`;
 				}
-			},
-		);
+			} else {
+				content = "<p>No routes available</p>";
+			}
 
-		// Set the line on the map
-		mapPolylineRef.current.setPath(coords);
-		mapPolylineRef.current.setMap(gMap);
+			if (directionPanelRef.current) {
+				directionPanelRef.current.innerHTML = content;
+			}
+		});
 	};
 
 	return (
@@ -226,14 +220,23 @@ function GoogleMap() {
 				<>
 					<Box position={"relative"}>
 						<Box as={"div"} height={"100%"} ref={mapDivRef} />
-						<Flex position={"absolute"} bottom={"6"} right={"9"} gap={"2"}>
+						<Flex position={"absolute"} bottom={"5"} right={"3"} gap={"2"}>
 							<IconButton size={"3"} onClick={handleDistanceCalculation}>
-								<RulerHorizontalIcon />
+								<RulerHorizontalIcon className="default-icon" />
 							</IconButton>
 							<IconButton size={"3"} onClick={handleMyLocation}>
-								<Crosshair2Icon />
+								<Crosshair2Icon className="default-icon" />
 							</IconButton>
 						</Flex>
+
+						<Box
+							position={"absolute"}
+							bottom={"2"}
+							left={"2"}
+							p={"2"}
+							ref={directionPanelRef}
+							className={style["distance-panel"]}
+						/>
 					</Box>
 
 					<DialogForm

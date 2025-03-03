@@ -8,3 +8,5 @@ export type T_GooglePinElement = google.maps.marker.PinElement;
 export type T_GooglePlace = google.maps.places.Place;
 export type T_GoogleGeocoder = google.maps.Geocoder;
 export type T_GoogleDistanceMatrix = google.maps.DistanceMatrixService;
+export type T_GoogleDirectionRender = google.maps.DirectionsRenderer;
+export type T_GoogleDirectionService = google.maps.DirectionsService;

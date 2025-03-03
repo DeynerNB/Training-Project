@@ -44,6 +44,7 @@ const useGoogleMapsScript = () => {
 		window.initMap = () => {};
 
 		const scriptNode = document.createElement("script");
+		scriptNode.id = "google-map-initial-script";
 		scriptNode.type = "text/javascript";
 		scriptNode.src = API_URL;
 		scriptNode.defer = true;
