@@ -41,6 +41,12 @@ function OptionsPanel() {
 
 	const handleToggleFavorite = () => {
 		switchFavoritePlacesRef.current = !switchFavoritePlacesRef.current;
+		setSelectedFilters((s) => ({
+			...s,
+			searchValue: "",
+			showFavorites: switchFavoritePlacesRef.current,
+		}));
+		setSearchActive(true);
 	};
 
 	const handleSearch = () => {
