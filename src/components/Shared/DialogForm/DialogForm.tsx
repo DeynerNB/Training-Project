@@ -193,7 +193,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 								</Form.Control>
 							</Form.Field>
 
-							<Grid columns={{ initial: "auto", xs: "2" }} gapX={"3"}>
+							<Grid columns={{ initial: "1", xs: "2" }} gap={"3"}>
 								{/* --> Input: Lat Place */}
 								<Form.Field name="lat">
 									<Form.Label className={style["label--required"]}>
@@ -289,7 +289,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 								control={control}
 							/>
 
-							<Grid columns={"2"}>
+							<Grid columns={{ initial: "1", xs: "2" }} gap={"2"}>
 								{/* --> Input: Place amenities */}
 								<Box>
 									<CheckboxCategory
@@ -335,7 +335,10 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 											alt=""
 										/>
 										<Box position={"absolute"} top={"1"} right={"1"}>
-											<IconButton onClick={() => handleImageRemove(url)}>
+											<IconButton
+												onClick={() => handleImageRemove(url)}
+												color={"ruby"}
+											>
 												<Cross1Icon />
 											</IconButton>
 										</Box>
