@@ -58,12 +58,16 @@ function PlaceCard(props: IPlaceCard) {
 							{placeData.name}
 						</Text>
 
-						{placeData.isFavorite ? <StarFilledIcon /> : <></>}
+						{placeData.isFavorite ? (
+							<StarFilledIcon className="default-icon favorite-icon" />
+						) : (
+							<></>
+						)}
 					</Flex>
 
 					{/* Card category type badge */}
 					{placeData.category_type && (
-						<Box>
+						<Box my={"1"}>
 							<Badge>{placeData.category_type}</Badge>
 						</Box>
 					)}
@@ -88,14 +92,14 @@ function PlaceCard(props: IPlaceCard) {
 					</Flex>
 
 					{/* Card buttons */}
-					<Flex mt={"2"} justify={"end"} align={"center"} gap={"3"}>
+					<Flex mt={"2"} justify={"between"} align={"center"} gap={"3"}>
 						<PlaceDialog {...props} />
 						<IconButton
 							size={"3"}
 							variant={"ghost"}
 							onClick={() => handleRemovePlace(placeData.name)}
 						>
-							<TrashIcon color={"red"} />
+							<TrashIcon color={"red"} className="default-icon" />
 						</IconButton>
 					</Flex>
 				</Flex>

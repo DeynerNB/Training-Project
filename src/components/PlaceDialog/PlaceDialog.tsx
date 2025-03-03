@@ -62,7 +62,11 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 					>
 						<Dialog.Title size={"7"}>{placeData.name}</Dialog.Title>
 						<IconButton variant={"ghost"} onClick={handleToggleFavorite}>
-							{favoriteIcon ? <StarFilledIcon /> : <StarIcon />}
+							{favoriteIcon ? (
+								<StarFilledIcon className={"default-icon favorite-icon"} />
+							) : (
+								<StarIcon className={"default-icon favorite-icon"} />
+							)}
 						</IconButton>
 					</Flex>
 				</Box>
@@ -120,7 +124,7 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 					{/* Dialog Close button */}
 					<Box mt={"2"} style={{ textAlign: "end" }}>
 						<Dialog.Close style={{ placeSelf: "end" }}>
-							<Button variant="soft" color="gray">
+							<Button color={"ruby"} variant={"surface"}>
 								Close
 							</Button>
 						</Dialog.Close>

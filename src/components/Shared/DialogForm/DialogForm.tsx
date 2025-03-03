@@ -327,12 +327,19 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 
 					{/* Submit place */}
 					<Flex mt={"5"} gap={"3"} justify={"end"}>
-						<Button type={"submit"}>Add place</Button>
 						<Dialog.Close>
-							<Button type={"button"} onClick={() => setOpenPlaceForm(false)}>
+							<Button
+								type={"button"}
+								color={"ruby"}
+								variant={"surface"}
+								onClick={() => setOpenPlaceForm(false)}
+							>
 								Close
 							</Button>
 						</Dialog.Close>
+						<Button variant={"soft"} type={"submit"}>
+							Add place
+						</Button>
 					</Flex>
 				</Form.Root>
 			</Dialog.Content>
