@@ -1,5 +1,4 @@
-import { Crosshair2Icon, RulerHorizontalIcon } from "@radix-ui/react-icons";
-import { Box, Flex, IconButton } from "@radix-ui/themes";
+import { Box, Flex, IconButton, Spinner } from "@radix-ui/themes";
 import { useContext, useEffect, useRef, useState } from "react";
 
 // -- Hooks import
@@ -24,7 +23,8 @@ import type {
 // -- Components import
 import DialogForm from "../Shared/DialogForm/DialogForm";
 
-import { googleMapStyle } from "./GoogleMap.interface";
+import { Toast } from "radix-ui";
+import { mapStyle } from "./GoogleMap.interface";
 // -- Styles import
 import style from "./GoogleMap.module.scss";
 
@@ -35,6 +35,8 @@ function GoogleMap() {
 
 	// -- Hooks variables
 	const [showDistancePanel, setShowDistancePanel] = useState(false);
+
+	const [showAlert, setShowAlert] = useState(false);
 
 	const [openPlaceForm, setOpenPlaceForm] = useState(false);
 
@@ -96,9 +98,16 @@ function GoogleMap() {
 			center: { lat: CR_lat, lng: CR_lng },
 			zoom: 11,
 			mapId: "Mapa Proyecto",
-			styles: googleMapStyle,
+			// styles: custom_Style,
 			disableDefaultUI: true,
 		});
+
+		const googleMapStyle = new google.maps.StyledMapType(mapStyle, {
+			name: "Styled Map",
+		});
+
+		googleMapObj.mapTypes.set("styled_map", googleMapStyle);
+		googleMapObj.setMapTypeId("styled_map");
 
 		// Set the click listener to add a new place
 		googleMapObj.addListener(
@@ -172,6 +181,11 @@ function GoogleMap() {
 	// Calculate and show the distance between two selected markers
 	const handleDistanceCalculation = async () => {
 		if (!selectedMarkers || selectedMarkers.current.length < 2) {
+			setShowAlert(true);
+			setTimeout(() => {
+				setShowAlert(false);
+			}, 2000);
+
 			console.error("No markers are selected");
 			return;
 		}
@@ -219,13 +233,20 @@ function GoogleMap() {
 	return (
 		<>
 			<Box position={"relative"}>
-				<Box as={"div"} height={"100%"} ref={mapDivRef} />
+				<Box as={"div"} height={"100%"} ref={mapDivRef}>
+					<Flex justify={"center"} align={"center"} height={"100%"}>
+						<Spinner />
+					</Flex>
+				</Box>
+
 				<Flex position={"absolute"} bottom={"5"} right={"3"} gap={"2"}>
 					<IconButton size={"3"} onClick={handleDistanceCalculation}>
-						<RulerHorizontalIcon className="default-icon" />
+						{/* <RulerHorizontalIcon className="default-icon" /> */}
+						<span className="material-symbols-outlined">navigation</span>
 					</IconButton>
 					<IconButton size={"3"} onClick={handleMyLocation}>
-						<Crosshair2Icon className="default-icon" />
+						{/* <Crosshair2Icon className="default-icon" /> */}
+						<span className="material-symbols-outlined">my_location</span>
 					</IconButton>
 				</Flex>
 
@@ -241,6 +262,20 @@ function GoogleMap() {
 				) : (
 					<></>
 				)}
+
+				<Toast.Provider>
+					<Toast.Root
+						className={style["toast-root"]}
+						open={showAlert}
+						onOpenChange={setShowAlert}
+					>
+						<Toast.Title className={style["toast-title"]}>Info</Toast.Title>
+						<Toast.Description className={style["toast-description"]}>
+							Please select two markers to calculate their route
+						</Toast.Description>
+					</Toast.Root>
+					<Toast.Viewport className={style["toast-viewport"]} />
+				</Toast.Provider>
 			</Box>
 
 			<DialogForm

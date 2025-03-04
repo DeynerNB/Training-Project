@@ -23,15 +23,17 @@ function App() {
 				>
 					<Grid
 						minWidth={"300px"}
+						height={"100%"}
 						rows={{ initial: "1", sm: "min-content 1fr" }}
-						p={"3"}
+						p={{ initial: "0", sm: "4" }}
 						gap={"2"}
 					>
 						{/* Options panel */}
-						<OptionPanel />
+						{width > 768 ? <OptionPanel title="MyMap" /> : <></>}
 
 						{/* My places component */}
-						{width < 768 ? <></> : <PlacesList />}
+						{/* TODO: Set up a button to show the list */}
+						<PlacesList />
 					</Grid>
 
 					{/* Google map component */}

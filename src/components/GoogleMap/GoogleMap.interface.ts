@@ -1,23 +1,61 @@
-export const googleMapStyle = [
+export const mapStyle = [
 	{
-		featureType: "administrative.land_parcel",
+		featureType: "all",
+		elementType: "geometry.fill",
 		stylers: [
 			{
-				visibility: "off",
+				weight: "2.00",
 			},
 		],
 	},
 	{
-		featureType: "administrative.neighborhood",
+		featureType: "all",
+		elementType: "geometry.stroke",
 		stylers: [
 			{
-				visibility: "off",
+				color: "#9c9c9c",
+			},
+		],
+	},
+	{
+		featureType: "all",
+		elementType: "labels.text",
+		stylers: [
+			{
+				visibility: "on",
+			},
+		],
+	},
+	{
+		featureType: "landscape",
+		elementType: "all",
+		stylers: [
+			{
+				color: "#f2f2f2",
+			},
+		],
+	},
+	{
+		featureType: "landscape",
+		elementType: "geometry.fill",
+		stylers: [
+			{
+				color: "#ffffff",
+			},
+		],
+	},
+	{
+		featureType: "landscape.man_made",
+		elementType: "geometry.fill",
+		stylers: [
+			{
+				color: "#ffffff",
 			},
 		],
 	},
 	{
 		featureType: "poi",
-		elementType: "labels.text",
+		elementType: "all",
 		stylers: [
 			{
 				visibility: "off",
@@ -26,25 +64,55 @@ export const googleMapStyle = [
 	},
 	{
 		featureType: "road",
-		elementType: "labels",
+		elementType: "all",
 		stylers: [
 			{
-				visibility: "off",
+				saturation: -100,
+			},
+			{
+				lightness: 45,
 			},
 		],
 	},
 	{
-		featureType: "road.arterial",
-		elementType: "labels",
+		featureType: "road",
+		elementType: "geometry.fill",
 		stylers: [
 			{
-				visibility: "off",
+				color: "#eeeeee",
+			},
+		],
+	},
+	{
+		featureType: "road",
+		elementType: "labels.text.fill",
+		stylers: [
+			{
+				color: "#7b7b7b",
+			},
+		],
+	},
+	{
+		featureType: "road",
+		elementType: "labels.text.stroke",
+		stylers: [
+			{
+				color: "#ffffff",
 			},
 		],
 	},
 	{
 		featureType: "road.highway",
-		elementType: "labels",
+		elementType: "all",
+		stylers: [
+			{
+				visibility: "simplified",
+			},
+		],
+	},
+	{
+		featureType: "road.arterial",
+		elementType: "labels.icon",
 		stylers: [
 			{
 				visibility: "off",
@@ -52,7 +120,8 @@ export const googleMapStyle = [
 		],
 	},
 	{
-		featureType: "road.local",
+		featureType: "transit",
+		elementType: "all",
 		stylers: [
 			{
 				visibility: "off",
@@ -61,10 +130,40 @@ export const googleMapStyle = [
 	},
 	{
 		featureType: "water",
-		elementType: "labels.text",
+		elementType: "all",
 		stylers: [
 			{
-				visibility: "off",
+				color: "#46bcec",
+			},
+			{
+				visibility: "on",
+			},
+		],
+	},
+	{
+		featureType: "water",
+		elementType: "geometry.fill",
+		stylers: [
+			{
+				color: "#c8d7d4",
+			},
+		],
+	},
+	{
+		featureType: "water",
+		elementType: "labels.text.fill",
+		stylers: [
+			{
+				color: "#070707",
+			},
+		],
+	},
+	{
+		featureType: "water",
+		elementType: "labels.text.stroke",
+		stylers: [
+			{
+				color: "#ffffff",
 			},
 		],
 	},

@@ -20,9 +20,10 @@ import {
 	availableAmenities,
 } from "../../utils/FiltersOptions.util";
 
+import type { IOptionsPanel } from "./OptionsPanel.interface";
 import style from "./OptionsPanel.module.scss";
 
-function OptionsPanel() {
+function OptionsPanel(props: IOptionsPanel) {
 	// Set a list of available place types
 	const availableTypes = Object.values(E_type);
 
@@ -70,21 +71,24 @@ function OptionsPanel() {
 	};
 
 	const handleResetFilters = () => {
-		setSelectedFilters((s) => ({ ...s, type: null, ammenities: [] }));
+		setSelectedFilters((s) => ({
+			...s,
+			type: null,
+			budget: null,
+			ammenities: [],
+		}));
 	};
 
 	return (
 		<Flex direction={"column"} gap={"3"}>
 			{/* Search filter */}
-			<Text as={"span"}>MyMap</Text>
+			{props.title && <Text as={"span"}>MyMap</Text>}
 			<TextField.Root ref={searchInputRef} placeholder="Search" />
 
 			<Flex gap={"2"} align={"center"}>
 				<Switch size={"2"} onCheckedChange={handleToggleFavorite} /> Show
 				favorites
 			</Flex>
-
-			<Separator size={"4"} />
 
 			{/* Filters accordion */}
 			<Accordion.Root
@@ -159,6 +163,8 @@ function OptionsPanel() {
 			</Accordion.Root>
 
 			<Button onClick={handleSearch}>Search</Button>
+
+			<Separator size={"4"} />
 		</Flex>
 	);
 }

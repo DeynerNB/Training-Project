@@ -20,13 +20,17 @@ import PlaceDialog from "../PlaceDialog/PlaceDialog";
 import type { IPlaceCard } from "./PlaceCard.interface";
 
 function PlaceCard(props: IPlaceCard) {
-	const { placeData, handleRemovePlace } = props;
+	const { placeData, handleRemovePlace, closeDialog } = props;
 
 	const { setMapCenter } = useContext(GMapContext);
 
 	const handleSetMapPosition = () => {
 		const { lat, lng } = placeData;
 		setMapCenter({ lat, lng });
+
+		if (closeDialog) {
+			closeDialog();
+		}
 	};
 
 	return (
@@ -63,7 +67,7 @@ function PlaceCard(props: IPlaceCard) {
 							size="6"
 							weight="bold"
 							// className={style["card-title"]}
-							color={"cyan"}
+							color={"blue"}
 						>
 							{placeData.name}
 						</Text>

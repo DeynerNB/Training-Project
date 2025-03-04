@@ -43,7 +43,10 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 				<Button variant="outline">View details</Button>
 			</Dialog.Trigger>
 
-			<Dialog.Content className={style["dialog-container"]}>
+			<Dialog.Content
+				className={style["dialog-container"]}
+				maxWidth={{ initial: "350px", xs: "450px", sm: "600px" }}
+			>
 				{/* Image and name of the place */}
 				<Box
 					position={"relative"}

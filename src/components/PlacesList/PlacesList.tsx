@@ -1,4 +1,12 @@
-import { Box, Flex, Grid, Text } from "@radix-ui/themes";
+import {
+	Box,
+	Dialog,
+	Flex,
+	Grid,
+	type GridProps,
+	IconButton,
+	Text,
+} from "@radix-ui/themes";
 import { useContext, useEffect, useState } from "react";
 
 import { FilterContext } from "../../context/FilterContext/FilterContext";
@@ -8,6 +16,9 @@ import { GMapContext } from "../../context/GMapContext/GMapContext";
 // Interface import
 import type { IPlace } from "../../interfaces/Places.interface";
 
+import { Cross2Icon, HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { useWindowSize } from "usehooks-ts";
+import OptionsPanel from "../OptionsPanel/OptionsPanel";
 // Component and style imports
 import PlaceCard from "../PlaceCard/PlaceCard";
 import style from "./PlacesList.module.scss";
@@ -22,10 +33,10 @@ function PlacesList() {
 	// -- State variables
 	const [displayList, setDisplayList] = useState<IPlace[]>([...placesList]);
 
-	// -- Handlers functions
-	const handleRemovePlace = (markerId: string) => {
-		removePlaceFromMap(markerId);
-	};
+	const [showDialogList, setShowDialogList] = useState<boolean>(false);
+
+	// -- Hooks variables
+	const { width } = useWindowSize();
 
 	// -- UseEffects functions
 	// Update the display list
@@ -80,44 +91,106 @@ function PlacesList() {
 		}
 	}, [searchActive, selectedFilters, setSearchActive, placesList]);
 
+	// -- Handlers functions
+	const handleRemovePlace = (markerId: string) => {
+		removePlaceFromMap(markerId);
+	};
+
+	// -- Handlers functions
+	const closeDialog = () => {
+		setShowDialogList(false);
+	};
+
+	const generateCards = (attributes: GridProps) => {
+		return displayList.length > 0 ? (
+			<Grid {...attributes}>
+				{displayList.map((place: IPlace) => {
+					return (
+						<PlaceCard
+							key={place.name}
+							placeData={place}
+							handleRemovePlace={handleRemovePlace}
+							closeDialog={closeDialog}
+						/>
+					);
+				})}
+			</Grid>
+		) : (
+			<Box pt={{ initial: "3", sm: "2" }}>
+				<Flex
+					p={"3"}
+					height={"100%"}
+					direction={"column"}
+					justify={"center"}
+					align={"center"}
+					className={style["container-no-places-yet"]}
+				>
+					<Text align={"center"} as={"p"}>
+						There are no places added yet.
+					</Text>
+					<Text align={"center"} as={"p"}>
+						To add one, click the place you want to add on the map.
+					</Text>
+				</Flex>
+			</Box>
+		);
+	};
+
 	return (
 		<>
-			{/* If no places yet -> Display a message */}
-			{displayList.length === 0 ? (
-				<Box>
-					<Flex
-						p={"3"}
-						height={"100%"}
-						direction={"column"}
-						justify={"center"}
-						align={"center"}
-						className={style["container-no-places-yet"]}
+			{width < 768 ? (
+				<>
+					<Dialog.Root
+						open={showDialogList}
+						onOpenChange={() => {
+							if (showDialogList) {
+								setShowDialogList(false);
+							}
+						}}
 					>
-						<Text align={"center"} as={"p"}>
-							There are no places added yet.
-						</Text>
-						<Text align={"center"} as={"p"}>
-							To add one, click the place you want to add on the map.
-						</Text>
-					</Flex>
-				</Box>
+						<Dialog.Trigger onClick={() => setShowDialogList(true)}>
+							<Box
+								position={"absolute"}
+								top={"3"}
+								left={"3"}
+								style={{ zIndex: 20 }}
+							>
+								<IconButton size={"3"}>
+									<HamburgerMenuIcon className="default-icon" />
+								</IconButton>
+							</Box>
+						</Dialog.Trigger>
+
+						<Dialog.Content>
+							<Dialog.Title align={"center"}>Saved places</Dialog.Title>
+							<OptionsPanel />
+
+							{generateCards({
+								mt: "3",
+								py: "3",
+								gap: "3",
+								overflowY: "scroll",
+								rows: "repeat(auto-fill, 350px)",
+								maxHeight: "600px",
+							})}
+
+							<Dialog.Close>
+								<Box position={"absolute"} top={"3"} right={"4"}>
+									<IconButton color={"ruby"} variant={"ghost"}>
+										<Cross2Icon className="default-icon" />
+									</IconButton>
+								</Box>
+							</Dialog.Close>
+						</Dialog.Content>
+					</Dialog.Root>
+				</>
 			) : (
-				<Grid
-					py={"3"}
-					gap={"3"}
-					overflowY={"scroll"}
-					rows={"repeat(auto-fill, 350px)"}
-				>
-					{displayList.map((place: IPlace) => {
-						return (
-							<PlaceCard
-								key={place.name}
-								placeData={place}
-								handleRemovePlace={handleRemovePlace}
-							/>
-						);
-					})}
-				</Grid>
+				generateCards({
+					py: "1",
+					gap: "3",
+					overflowY: "scroll",
+					rows: "repeat(auto-fill, 350px)",
+				})
 			)}
 		</>
 	);

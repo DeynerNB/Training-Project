@@ -10,6 +10,7 @@ import { Theme } from "@radix-ui/themes";
 const LoadInitialGoogleMapScript = () => {
 	const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 	const API_URL = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&loading=async&callback=initMap&libraries=marker,places&v=beta`;
+
 	window.initMap = () => {};
 
 	const scriptNode = document.createElement("script");
@@ -26,7 +27,7 @@ LoadInitialGoogleMapScript();
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<Theme
-			accentColor="cyan"
+			accentColor="blue"
 			grayColor="gray"
 			panelBackground="solid"
 			scaling="100%"
