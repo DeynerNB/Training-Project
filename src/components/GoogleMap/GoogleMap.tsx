@@ -1,5 +1,5 @@
 import { Crosshair2Icon, RulerHorizontalIcon } from "@radix-ui/react-icons";
-import { Box, Button, Flex, IconButton } from "@radix-ui/themes";
+import { Box, Flex, IconButton } from "@radix-ui/themes";
 import { useContext, useEffect, useRef, useState } from "react";
 
 // -- Hooks import
@@ -74,11 +74,9 @@ function GoogleMap() {
 		}
 	}, [googleMapsScriptLoaded]);
 
-	// Load every google maps script
-	const initiliazeGoogleMapScripts = () => {
-		const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-		loadGoogleSripts(apiKey);
-	};
+	useEffect(() => {
+		loadGoogleSripts();
+	}, [loadGoogleSripts]);
 
 	// Load the map into the page
 	const initializeMap = async () => {
@@ -220,44 +218,36 @@ function GoogleMap() {
 
 	return (
 		<>
-			{googleMapsScriptLoaded ? (
-				<>
-					<Box position={"relative"}>
-						<Box as={"div"} height={"100%"} ref={mapDivRef} />
-						<Flex position={"absolute"} bottom={"5"} right={"3"} gap={"2"}>
-							<IconButton size={"3"} onClick={handleDistanceCalculation}>
-								<RulerHorizontalIcon className="default-icon" />
-							</IconButton>
-							<IconButton size={"3"} onClick={handleMyLocation}>
-								<Crosshair2Icon className="default-icon" />
-							</IconButton>
-						</Flex>
-
-						{showDistancePanel ? (
-							<Box
-								position={"absolute"}
-								bottom={"2"}
-								left={"2"}
-								p={"2"}
-								ref={directionPanelRef}
-								className={style["distance-panel"]}
-							/>
-						) : (
-							<></>
-						)}
-					</Box>
-
-					<DialogForm
-						openPlaceForm={openPlaceForm}
-						setOpenPlaceForm={setOpenPlaceForm}
-						coords={selectionCoord}
-					/>
-				</>
-			) : (
-				<Flex justify={"center"} align={"center"}>
-					<Button onClick={initiliazeGoogleMapScripts}>Load Map</Button>
+			<Box position={"relative"}>
+				<Box as={"div"} height={"100%"} ref={mapDivRef} />
+				<Flex position={"absolute"} bottom={"5"} right={"3"} gap={"2"}>
+					<IconButton size={"3"} onClick={handleDistanceCalculation}>
+						<RulerHorizontalIcon className="default-icon" />
+					</IconButton>
+					<IconButton size={"3"} onClick={handleMyLocation}>
+						<Crosshair2Icon className="default-icon" />
+					</IconButton>
 				</Flex>
-			)}
+
+				{showDistancePanel ? (
+					<Box
+						position={"absolute"}
+						bottom={"2"}
+						left={"2"}
+						p={"2"}
+						ref={directionPanelRef}
+						className={style["distance-panel"]}
+					/>
+				) : (
+					<></>
+				)}
+			</Box>
+
+			<DialogForm
+				openPlaceForm={openPlaceForm}
+				setOpenPlaceForm={setOpenPlaceForm}
+				coords={selectionCoord}
+			/>
 		</>
 	);
 }

@@ -33,23 +33,7 @@ const useGoogleMapsScript = () => {
 	}, [checkScript]);
 
 	// Load the initial google maps script
-	const loadGoogleSripts = (apiKey: string) => {
-		// If the google class is loaded -> avoid loading it again
-		if (window.google) {
-			setScriptLoaded(true);
-			return;
-		}
-
-		const API_URL = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&loading=async&callback=initMap&libraries=marker,places&v=beta`;
-		window.initMap = () => {};
-
-		const scriptNode = document.createElement("script");
-		scriptNode.id = "google-map-initial-script";
-		scriptNode.type = "text/javascript";
-		scriptNode.src = API_URL;
-		scriptNode.defer = true;
-
-		document.head.appendChild(scriptNode);
+	const loadGoogleSripts = () => {
 		setCheckScript(true);
 	};
 
