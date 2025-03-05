@@ -17,7 +17,6 @@ import { GMapContext } from "../../context/GMapContext/GMapContext";
 import type { IPlace } from "../../interfaces/Places.interface";
 
 import { Cross2Icon, HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { useWindowSize } from "usehooks-ts";
 import OptionsPanel from "../OptionsPanel/OptionsPanel";
 // Component and style imports
 import PlaceCard from "../PlaceCard/PlaceCard";
@@ -34,9 +33,6 @@ function PlacesList() {
 	const [displayList, setDisplayList] = useState<IPlace[]>([...placesList]);
 
 	const [showDialogList, setShowDialogList] = useState<boolean>(false);
-
-	// -- Hooks variables
-	const { width } = useWindowSize();
 
 	// -- UseEffects functions
 	// Update the display list
@@ -116,7 +112,7 @@ function PlacesList() {
 				})}
 			</Grid>
 		) : (
-			<Box pt={{ initial: "3", sm: "2" }}>
+			<Box pt={{ initial: "3", sm: "2" }} height={"100%"}>
 				<Flex
 					p={"3"}
 					height={"100%"}
@@ -138,60 +134,58 @@ function PlacesList() {
 
 	return (
 		<>
-			{width < 768 ? (
-				<>
-					<Dialog.Root
-						open={showDialogList}
-						onOpenChange={() => {
-							if (showDialogList) {
-								setShowDialogList(false);
-							}
-						}}
-					>
-						<Dialog.Trigger onClick={() => setShowDialogList(true)}>
-							<Box
-								position={"absolute"}
-								top={"3"}
-								left={"3"}
-								style={{ zIndex: 20 }}
-							>
-								<IconButton size={"3"}>
-									<HamburgerMenuIcon className="default-icon" />
-								</IconButton>
-							</Box>
-						</Dialog.Trigger>
-
-						<Dialog.Content>
-							<Dialog.Title align={"center"}>Saved places</Dialog.Title>
-							<OptionsPanel />
-
-							{generateCards({
-								mt: "3",
-								py: "3",
-								gap: "3",
-								overflowY: "scroll",
-								rows: "repeat(auto-fill, 350px)",
-								maxHeight: "600px",
-							})}
-
-							<Dialog.Close>
-								<Box position={"absolute"} top={"3"} right={"4"}>
-									<IconButton color={"ruby"} variant={"ghost"}>
-										<Cross2Icon className="default-icon" />
-									</IconButton>
-								</Box>
-							</Dialog.Close>
-						</Dialog.Content>
-					</Dialog.Root>
-				</>
-			) : (
-				generateCards({
+			<Box display={{ initial: "none", sm: "block" }} overflow={"scroll"}>
+				{generateCards({
 					py: "1",
 					gap: "3",
-					overflowY: "scroll",
 					rows: "repeat(auto-fill, 350px)",
-				})
-			)}
+				})}
+			</Box>
+			<Box display={{ initial: "block", sm: "none" }}>
+				<Dialog.Root
+					open={showDialogList}
+					onOpenChange={() => {
+						if (showDialogList) {
+							setShowDialogList(false);
+						}
+					}}
+				>
+					<Dialog.Trigger onClick={() => setShowDialogList(true)}>
+						<Box
+							position={"absolute"}
+							top={"3"}
+							left={"3"}
+							style={{ zIndex: 20 }}
+						>
+							<IconButton size={"3"}>
+								<HamburgerMenuIcon className="default-icon" />
+							</IconButton>
+						</Box>
+					</Dialog.Trigger>
+
+					<Dialog.Content>
+						<Dialog.Title align={"center"}>Saved places</Dialog.Title>
+						<OptionsPanel />
+
+						{generateCards({
+							mt: "3",
+							py: "3",
+							gap: "3",
+							overflowY: "scroll",
+							rows: "repeat(auto-fill, 350px)",
+							maxHeight: "600px",
+						})}
+
+						<Dialog.Close>
+							<Box position={"absolute"} top={"3"} right={"4"}>
+								<IconButton color={"ruby"} variant={"ghost"}>
+									<Cross2Icon className="default-icon" />
+								</IconButton>
+							</Box>
+						</Dialog.Close>
+					</Dialog.Content>
+				</Dialog.Root>
+			</Box>
 		</>
 	);
 }

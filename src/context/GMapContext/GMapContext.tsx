@@ -106,6 +106,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 		{ name, lat, lng }: IMarker,
 		map?: T_GoogleMap,
 		pin?: T_GooglePinElement,
+		pinAct?: T_GooglePinElement,
 	) => {
 		const Marker = geoService.getAdvancedMarker();
 
@@ -134,7 +135,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 			}
 
 			// Update the list of selected markers
-			updateSelectedMarkersList(marker);
+			updateSelectedMarkersList(marker, pin, pinAct);
 		});
 
 		return marker;
@@ -182,10 +183,14 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 	};
 
 	// Update the list of selected markers
-	const updateSelectedMarkersList = (marker: T_GoogleAdvMarker) => {
+	const updateSelectedMarkersList = (
+		marker: T_GoogleAdvMarker,
+		pinDef?: T_GooglePinElement,
+		pinAct?: T_GooglePinElement,
+	) => {
 		// Create each pin style
-		const pinDefault = createPinElement("#FC4C04");
-		const pinBackground = createPinElement("#FBBC04");
+		const pinDefault = pinDef || createPinElement("#FC4C04");
+		const pinBackground = pinAct || createPinElement("#FBBC04");
 
 		if (!pinDefault || !pinBackground) {
 			return;
@@ -243,11 +248,13 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 	const showUserLocation = (coords: ICoordinates) => {
 		if (!userLocationActiveRef.current) {
 			const userPin = createPinElement("#4285F4", "#1159d1", "#1159d1");
+			const userPinAct = createPinElement("#6897e8", "#2c66c7", "#2c66c7");
 
 			createMarker(
 				{ name: "Your position", lat: coords.lat, lng: coords.lng },
 				undefined,
 				userPin,
+				userPinAct,
 			);
 		}
 

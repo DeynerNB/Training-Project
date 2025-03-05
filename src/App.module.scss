@@ -1,1 +1,7 @@
 @use "./styles/global.scss" as global;
+
+.panel {
+    outline: 2px solid var(--accent-8);
+    box-shadow: 5px 0 20px 10px var(--accent-a5);
+    z-index: 20;
+}

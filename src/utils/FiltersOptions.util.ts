@@ -13,10 +13,13 @@ export enum E_Categories {
 	categoryBudget = "categoryBudget",
 }
 export enum E_type {
-	Café = "Café",
+	Cafe = "Café",
 	Bar = "Bar",
+	Games = "Arcade/Games",
 	Restaurant = "Restaurant",
 	Park = "Park",
+	Mall = "Mall",
+	MovieTheater = "Movie Theater ",
 	CoWorkingSpace = "Co-working space",
 	Other = "Other",
 }

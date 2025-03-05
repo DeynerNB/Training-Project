@@ -133,9 +133,6 @@ export const mapStyle = [
 		elementType: "all",
 		stylers: [
 			{
-				color: "#46bcec",
-			},
-			{
 				visibility: "on",
 			},
 		],
@@ -145,25 +142,31 @@ export const mapStyle = [
 		elementType: "geometry.fill",
 		stylers: [
 			{
-				color: "#c8d7d4",
+				lightness: "50",
+			},
+			{
+				gamma: ".75",
+			},
+			{
+				saturation: "100",
 			},
 		],
 	},
 	{
 		featureType: "water",
-		elementType: "labels.text.fill",
+		elementType: "labels",
 		stylers: [
 			{
-				color: "#070707",
+				visibility: "simplified",
 			},
 		],
 	},
 	{
 		featureType: "water",
-		elementType: "labels.text.stroke",
+		elementType: "labels.icon",
 		stylers: [
 			{
-				color: "#ffffff",
+				visibility: "off",
 			},
 		],
 	},

@@ -14,7 +14,7 @@
 
         z-index: 10;
         background: rgb(255, 255, 255);
-        background: linear-gradient(180deg, #ffffff00 0%, #5e5e5e 100%);
+        background: linear-gradient(180deg, #ffffff00 0%, #191919 100%);
     }
 }
 
@@ -35,4 +35,12 @@
 .favorite-icon {
     color: #ffbb00;
     // background-color: #ffbb00;
+}
+
+@media only screen and (max-width: 768px) {
+    .dialog-containerREMOVE_TO_TEST {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+    }
 }

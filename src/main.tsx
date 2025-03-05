@@ -27,11 +27,11 @@ LoadInitialGoogleMapScript();
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<Theme
-			accentColor="blue"
+			accentColor="yellow"
 			grayColor="gray"
 			panelBackground="solid"
 			scaling="100%"
-			radius="full"
+			radius="medium"
 		>
 			<App />
 		</Theme>

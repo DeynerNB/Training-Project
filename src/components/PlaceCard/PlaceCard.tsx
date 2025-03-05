@@ -36,9 +36,18 @@ function PlaceCard(props: IPlaceCard) {
 	return (
 		<Box maxHeight={"350px"} maxWidth={"100%"} position={"relative"}>
 			<Card style={{ height: "100%" }}>
-				<Flex direction={"column"} height={"100%"}>
+				<Flex
+					direction={"column"}
+					height={"100%"}
+					// style={{ justifyContent: "space-between" }}
+				>
 					{/* Card image inset */}
-					<Inset clip="padding-box" side="top" pb="current">
+					<Inset
+						clip="padding-box"
+						side="top"
+						pb="current"
+						style={{ height: "100%" }}
+					>
 						<img
 							src={placeData?.images?.[0] || defaultPlaceImage}
 							alt="Bold typography"
@@ -67,7 +76,7 @@ function PlaceCard(props: IPlaceCard) {
 							size="6"
 							weight="bold"
 							// className={style["card-title"]}
-							color={"blue"}
+							color={"yellow"}
 						>
 							{placeData.name}
 						</Text>
@@ -101,7 +110,11 @@ function PlaceCard(props: IPlaceCard) {
 					<Flex mt={"3"} justify={"between"} align={"center"} gap={"3"}>
 						<PlaceDialog {...props} />
 						<Flex gap={"3"} align={"center"}>
-							<IconButton size={"3"} variant={"ghost"}>
+							<IconButton
+								size={"3"}
+								variant={"ghost"}
+								aria-label="find place on map"
+							>
 								<Crosshair2Icon
 									className="default-icon"
 									onClick={handleSetMapPosition}
@@ -111,6 +124,7 @@ function PlaceCard(props: IPlaceCard) {
 								size={"3"}
 								variant={"ghost"}
 								onClick={() => handleRemovePlace(placeData.name)}
+								aria-label="delete place"
 							>
 								<TrashIcon color={"red"} className="default-icon" />
 							</IconButton>

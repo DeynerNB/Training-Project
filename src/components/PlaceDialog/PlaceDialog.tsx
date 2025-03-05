@@ -45,7 +45,11 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 
 			<Dialog.Content
 				className={style["dialog-container"]}
-				maxWidth={{ initial: "350px", xs: "450px", sm: "600px" }}
+				// -- Test full w\h dialog (Remove the REMOVE_TO_TEST in scss)
+				// height={{ initial: "100%", sm: "auto" }}
+				// maxHeight={{ initial: "100vh", sm: "auto" }}
+				// maxWidth={{ initial: "100vw", sm: "600px" }}
+				maxWidth={{ initial: "90vw", xs: "450px", sm: "600px" }}
 			>
 				{/* Image and name of the place */}
 				<Box
@@ -92,14 +96,16 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						align={"center"}
 						px={"4"}
 					>
-						<Dialog.Title size={"7"} style={{ textShadow: "0 0 10px #000000" }}>
-							{placeData.name}
-						</Dialog.Title>
-						<IconButton variant={"ghost"} onClick={handleToggleFavorite}>
+						<Dialog.Title size={"7"}>{placeData.name}</Dialog.Title>
+						<IconButton
+							variant={"ghost"}
+							onClick={handleToggleFavorite}
+							aria-label="toggle place as favorite"
+						>
 							{favoriteIcon ? (
-								<HeartFilledIcon className={"default-icon favorite-icon"} />
+								<HeartFilledIcon className={"default-icon-lg favorite-icon"} />
 							) : (
-								<HeartIcon className={"default-icon favorite-icon"} />
+								<HeartIcon className={"default-icon-lg favorite-icon"} />
 							)}
 						</IconButton>
 					</Flex>
@@ -111,7 +117,11 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						className={style["place-overlay"]}
 					>
 						<Dialog.Close style={{ placeSelf: "end" }}>
-							<IconButton color={"ruby"} variant={"surface"}>
+							<IconButton
+								color={"ruby"}
+								variant={"surface"}
+								aria-label="close dialog"
+							>
 								<Cross1Icon />
 							</IconButton>
 						</Dialog.Close>
@@ -120,56 +130,52 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 
 				{/* Other information */}
 				<Box px={"5"} py={"4"}>
-					<Flex>
-						<Flex direction={"column"} gap={"2"} style={{ flexGrow: 1 }}>
-							{/* Description */}
+					<Flex direction={"column"} gap={"2"} style={{ flexGrow: 1 }}>
+						{/* Description */}
+						<Flex justify={"between"}>
 							<Text as="span" weight={"medium"}>
 								About this place:
 							</Text>
-							<Text as="p">{placeData.description}</Text>
-
-							{/* Budget */}
-							<Text as="span" weight={"medium"}>
-								Budget:
-							</Text>
-							<Text as="p">{placeData.categoryBudget}</Text>
-
-							{/* Amenities */}
-							{placeData.category_ammenities?.length &&
-							placeData.category_ammenities?.length > 0 ? (
-								<Text as="span" weight={"medium"}>
-									Amenities:
-								</Text>
-							) : (
-								<></>
-							)}
-							{placeData.category_ammenities?.map((ammenity) => (
-								<Flex gap={"2"} key={ammenity.label}>
-									<img
-										src={`/icons/${ammenity.icon}.svg`}
-										aria-hidden
-										style={{ display: "inline", filter: "brightness(0)" }}
-									/>
-									<Text as="span">{ammenity.label}</Text>
-								</Flex>
-							))}
-
-							{/* Google Maps link */}
-							<Box mt={"2"}>
-								<Link
-									target={"_blank"}
-									href={`https://maps.google.com/?q=${placeData.lat},${placeData.lng}`}
-								>
-									I want to go there
-								</Link>
-							</Box>
-						</Flex>
-
-						{/* Place type */}
-						<Box>
 							<Badge size={"3"} style={{ placeSelf: "end" }}>
 								{placeData.category_type}
 							</Badge>
+						</Flex>
+						<Text as="p">{placeData.description}</Text>
+
+						{/* Budget */}
+						<Text as="span" weight={"medium"}>
+							Budget:
+						</Text>
+						<Text as="p">{placeData.categoryBudget}</Text>
+
+						{/* Amenities */}
+						{placeData.category_ammenities?.length &&
+						placeData.category_ammenities?.length > 0 ? (
+							<Text as="span" weight={"medium"}>
+								Amenities:
+							</Text>
+						) : (
+							<></>
+						)}
+						{placeData.category_ammenities?.map((ammenity) => (
+							<Flex gap={"2"} key={ammenity.label}>
+								<img
+									src={`/icons/${ammenity.icon}.svg`}
+									aria-hidden
+									style={{ display: "inline", filter: "brightness(0)" }}
+								/>
+								<Text as="span">{ammenity.label}</Text>
+							</Flex>
+						))}
+
+						{/* Google Maps link */}
+						<Box mt={"2"}>
+							<Link
+								target={"_blank"}
+								href={`https://maps.google.com/?q=${placeData.lat},${placeData.lng}`}
+							>
+								I want to go there
+							</Link>
 						</Box>
 					</Flex>
 				</Box>

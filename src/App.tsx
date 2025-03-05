@@ -1,24 +1,20 @@
 import { Grid } from "@radix-ui/themes";
-import { useWindowSize } from "usehooks-ts";
 import GoogleMap from "./components/GoogleMap/GoogleMap";
 import OptionPanel from "./components/OptionsPanel/OptionsPanel";
 import PlacesList from "./components/PlacesList/PlacesList";
 import { FilterProvider } from "./context/FilterContext/FilterContext";
 import { GMapProvider } from "./context/GMapContext/GMapContext";
 
-// Import Swiper styles
-import "swiper/swiper-bundle.css";
+import style from "./App.module.scss";
 
 function App() {
-	const { width } = useWindowSize();
-
 	return (
 		<GMapProvider>
 			<FilterProvider>
 				<Grid
 					width={"100vw"}
 					height={"100vh"}
-					columns={{ initial: "1", sm: "1fr 2fr" }}
+					columns={{ initial: "1", sm: "300px 1fr", md: "500px 1fr" }}
 					rows={{ initial: "min-content 1fr", sm: "1" }}
 				>
 					<Grid
@@ -27,9 +23,11 @@ function App() {
 						rows={{ initial: "1", sm: "min-content 1fr" }}
 						p={{ initial: "0", sm: "4" }}
 						gap={"2"}
+						className={style.panel}
+						// style={{ borderLeft: "2px solid var(--accent-12)" }}
 					>
 						{/* Options panel */}
-						{width > 768 ? <OptionPanel title="MyMap" /> : <></>}
+						<OptionPanel title="MyMap" />
 
 						{/* My places component */}
 						{/* TODO: Set up a button to show the list */}

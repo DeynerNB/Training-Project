@@ -1,8 +1,12 @@
 @use "../../styles/shared/variables" as v;
 
 .distance-panel {
-    background-color: v.$white;
     border-radius: 0.4rem;
+    background-color: var(--accent-3);
+    outline: 1px solid var(--accent-10);
+    color: var(--accent-10);
+
+    z-index: 50;
 }
 
 // -- Toast styles from:

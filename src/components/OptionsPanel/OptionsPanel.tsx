@@ -1,5 +1,6 @@
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {
+	Box,
 	Button,
 	CheckboxGroup,
 	Flex,
@@ -80,9 +81,21 @@ function OptionsPanel(props: IOptionsPanel) {
 	};
 
 	return (
-		<Flex direction={"column"} gap={"3"}>
+		<Flex
+			direction={"column"}
+			gap={"3"}
+			display={{ initial: "none", sm: "flex" }}
+		>
 			{/* Search filter */}
-			{props.title && <Text as={"span"}>MyMap</Text>}
+			{props.title && (
+				<Box height={"80px"}>
+					<img
+						src="WhereNow Logo.png"
+						className={style["app-image"]}
+						alt="WhereNow Logo"
+					/>
+				</Box>
+			)}
 			<TextField.Root ref={searchInputRef} placeholder="Search" />
 
 			<Flex gap={"2"} align={"center"}>
@@ -162,7 +175,9 @@ function OptionsPanel(props: IOptionsPanel) {
 				</Accordion.Item>
 			</Accordion.Root>
 
-			<Button onClick={handleSearch}>Search</Button>
+			<Button onClick={handleSearch} variant={"surface"}>
+				Search
+			</Button>
 
 			<Separator size={"4"} />
 		</Flex>

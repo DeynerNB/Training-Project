@@ -240,13 +240,25 @@ function GoogleMap() {
 				</Box>
 
 				<Flex position={"absolute"} bottom={"5"} right={"3"} gap={"2"}>
-					<IconButton size={"3"} onClick={handleDistanceCalculation}>
+					<IconButton
+						size={"3"}
+						onClick={handleDistanceCalculation}
+						aria-label="Calculate route between two points"
+					>
 						{/* <RulerHorizontalIcon className="default-icon" /> */}
-						<span className="material-symbols-outlined">navigation</span>
+						<span className="material-symbols-outlined" aria-hidden>
+							navigation
+						</span>
 					</IconButton>
-					<IconButton size={"3"} onClick={handleMyLocation}>
+					<IconButton
+						size={"3"}
+						onClick={handleMyLocation}
+						aria-label="Set my location in the map"
+					>
 						{/* <Crosshair2Icon className="default-icon" /> */}
-						<span className="material-symbols-outlined">my_location</span>
+						<span className="material-symbols-outlined" aria-hidden>
+							my_location
+						</span>
 					</IconButton>
 				</Flex>
 
@@ -258,6 +270,7 @@ function GoogleMap() {
 						p={"2"}
 						ref={directionPanelRef}
 						className={style["distance-panel"]}
+						role="status"
 					/>
 				) : (
 					<></>

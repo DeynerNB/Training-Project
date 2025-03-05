@@ -1,7 +1,5 @@
-@use "../../styles/shared/variables" as v;
-
 .container-no-places-yet {
-    border: 2px dashed v.$primary-color;
+    border: 2px dashed var(--accent-10);
     border-radius: 0.4rem;
-    color: v.$primary-color;
+    color: var(--accent-10);
 }
