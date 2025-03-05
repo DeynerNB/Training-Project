@@ -113,12 +113,10 @@ function PlaceCard(props: IPlaceCard) {
 							<IconButton
 								size={"3"}
 								variant={"ghost"}
+								onClick={handleSetMapPosition}
 								aria-label="find place on map"
 							>
-								<Crosshair2Icon
-									className="default-icon"
-									onClick={handleSetMapPosition}
-								/>
+								<Crosshair2Icon className="default-icon" />
 							</IconButton>
 							<IconButton
 								size={"3"}

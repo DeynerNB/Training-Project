@@ -6,6 +6,10 @@
     object-fit: contain;
 }
 
+.search-input {
+    background-color: #ffffff;
+}
+
 // CSS structure from with some modifications:
 // https://www.radix-ui.com/primitives/docs/components/accordion
 
@@ -44,8 +48,9 @@ h3 {
     align-items: center;
     justify-content: space-between;
     font-size: 15px;
+    background-color: #ffffff;
 
-    border: 1px solid transparent;
+    border: 1px solid #f4f4f4;
 
     &:hover {
         background-color: v.$gray-1;
@@ -68,6 +73,7 @@ h3 {
 .accordion-content {
     overflow: hidden;
     font-size: 15px;
+    background-color: #ffffff;
 
     padding: 0.5rem;
 

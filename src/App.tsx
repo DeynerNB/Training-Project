@@ -23,8 +23,7 @@ function App() {
 						rows={{ initial: "1", sm: "min-content 1fr" }}
 						p={{ initial: "0", sm: "4" }}
 						gap={"2"}
-						className={style.panel}
-						// style={{ borderLeft: "2px solid var(--accent-12)" }}
+						className={`${style.panel} ${style.background}`}
 					>
 						{/* Options panel */}
 						<OptionPanel title="MyMap" />

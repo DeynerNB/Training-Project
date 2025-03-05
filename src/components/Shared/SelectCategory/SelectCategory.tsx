@@ -30,7 +30,7 @@ function SelectCategory({
 						onValueChange={field.onChange}
 						defaultValue={filterValues[0]}
 					>
-						<Select.Trigger />
+						<Select.Trigger aria-label={labelValue} />
 						<Select.Content>
 							{filterValues.map((value) => (
 								<Select.Item key={value} value={value}>

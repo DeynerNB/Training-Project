@@ -96,7 +96,12 @@ function OptionsPanel(props: IOptionsPanel) {
 					/>
 				</Box>
 			)}
-			<TextField.Root ref={searchInputRef} placeholder="Search" />
+			<TextField.Root
+				size={"3"}
+				className={style["search-input"]}
+				ref={searchInputRef}
+				placeholder="Search"
+			/>
 
 			<Flex gap={"2"} align={"center"}>
 				<Switch size={"2"} onCheckedChange={handleToggleFavorite} /> Show
@@ -127,7 +132,7 @@ function OptionsPanel(props: IOptionsPanel) {
 								onValueChange={handleTypeSelection}
 								defaultValue="all"
 							>
-								<Select.Trigger />
+								<Select.Trigger aria-label="Select place type" />
 								<Select.Content>
 									<Select.Group>
 										<Select.Item value={"all"}>All</Select.Item>
@@ -146,7 +151,7 @@ function OptionsPanel(props: IOptionsPanel) {
 								onValueChange={handleBudgetSelection}
 								defaultValue="all"
 							>
-								<Select.Trigger />
+								<Select.Trigger aria-label="Select place budget" />
 								<Select.Content>
 									<Select.Group>
 										<Select.Item value={"all"}>All</Select.Item>
@@ -164,8 +169,14 @@ function OptionsPanel(props: IOptionsPanel) {
 								<Text as="label">Ammenities</Text>
 								<Flex wrap={"wrap"} gap={"3"}>
 									{Object.entries(availableAmenities).map(([key, value]) => (
-										<CheckboxGroup.Item key={key} value={value.label}>
-											{value.label}
+										<CheckboxGroup.Item
+											key={key}
+											value={value.label}
+											aria-label={value.label}
+										>
+											<Text as="label" aria-hidden>
+												{value.label}
+											</Text>
 										</CheckboxGroup.Item>
 									))}
 								</Flex>

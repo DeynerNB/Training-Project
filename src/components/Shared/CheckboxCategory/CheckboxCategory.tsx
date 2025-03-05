@@ -29,8 +29,10 @@ function CheckboxCategory({
 				onValueChange={handleChange}
 			>
 				{Object.entries(filterOptions).map(([key, value]) => (
-					<CheckboxGroup.Item key={key} value={key}>
-						{value.label}
+					<CheckboxGroup.Item key={key} value={key} aria-label={value.label}>
+						<Text as="span" aria-hidden>
+							{value.label}
+						</Text>
 					</CheckboxGroup.Item>
 				))}
 			</CheckboxGroup.Root>

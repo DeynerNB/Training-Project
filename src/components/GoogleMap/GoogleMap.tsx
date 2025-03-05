@@ -128,6 +128,24 @@ function GoogleMap() {
 		// Save the google map object in the context
 		setGMap(googleMapObj);
 
+		mapDivRef.current.addEventListener("keydown", (event) => {
+			console.log("event: ", event);
+			if (event.key === "Enter") {
+				const center = googleMapObj.getCenter();
+				console.log("center: ", center);
+
+				if (center?.lat && center.lng) {
+					console.log("placing");
+
+					setSelectionCoord({
+						lat: center?.lat(),
+						lng: center?.lng(),
+					});
+					setOpenPlaceForm(true);
+				}
+			}
+		});
+
 		// Create a directions objects
 		const directionRender = new google.maps.DirectionsRenderer();
 		const directionService = new google.maps.DirectionsService();
@@ -233,7 +251,12 @@ function GoogleMap() {
 	return (
 		<>
 			<Box position={"relative"}>
-				<Box as={"div"} height={"100%"} ref={mapDivRef}>
+				<Box
+					as={"div"}
+					height={"100%"}
+					ref={mapDivRef}
+					// aria-description="To add a new place, press A to place a marker in the center of the map"
+				>
 					<Flex justify={"center"} align={"center"} height={"100%"}>
 						<Spinner />
 					</Flex>

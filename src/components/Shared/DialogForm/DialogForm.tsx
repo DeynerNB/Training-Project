@@ -268,6 +268,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 
 								<Flex gap={"3"}>
 									<TextField.Root
+										aria-label="Enter image URL"
 										style={{ width: "100%" }}
 										{...register("imageURL", { required: false })}
 									/>
@@ -275,6 +276,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 										type="button"
 										onClick={handleAddImageURL}
 										disabled={placeImagesURLs.length >= 3}
+										aria-label="Add image"
 									>
 										Add
 									</Button>
