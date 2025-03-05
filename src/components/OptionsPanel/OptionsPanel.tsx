@@ -81,11 +81,7 @@ function OptionsPanel(props: IOptionsPanel) {
 	};
 
 	return (
-		<Flex
-			direction={"column"}
-			gap={"3"}
-			// display={{ initial: "none", sm: "flex" }}
-		>
+		<Flex direction={"column"} gap={"3"}>
 			{/* Search filter */}
 			{props.title && (
 				<Box height={"80px"}>
@@ -167,7 +163,7 @@ function OptionsPanel(props: IOptionsPanel) {
 							{/* Ammenities filter */}
 							<CheckboxGroup.Root onValueChange={handleAmmenitiesSelection}>
 								<Text as="label">Ammenities</Text>
-								<Flex wrap={"wrap"} gap={"3"}>
+								<Grid columns={"3"} gapY={"2"}>
 									{Object.entries(availableAmenities).map(([key, value]) => (
 										<CheckboxGroup.Item
 											key={key}
@@ -179,7 +175,7 @@ function OptionsPanel(props: IOptionsPanel) {
 											</Text>
 										</CheckboxGroup.Item>
 									))}
-								</Flex>
+								</Grid>
 							</CheckboxGroup.Root>
 						</Grid>
 					</Accordion.Content>

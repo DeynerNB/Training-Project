@@ -319,10 +319,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 							<></>
 						) : (
 							<Grid
-								// rows={{ initial: "repeat(auto, min-content)", sm: "3" }}
-								// columns={{ initial: "2", sm: "1" }}
 								maxHeight={{ initial: "200px", sm: "100%" }}
-								// width={"auto"}
 								overflow={"auto"}
 								rows={{ initial: "1", sm: "3" }}
 								columns={{ initial: "repeat(3, max-content)", sm: "1" }}

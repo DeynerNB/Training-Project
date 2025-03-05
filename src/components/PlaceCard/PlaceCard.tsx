@@ -36,11 +36,7 @@ function PlaceCard(props: IPlaceCard) {
 	return (
 		<Box maxHeight={"350px"} maxWidth={"100%"} position={"relative"}>
 			<Card style={{ height: "100%" }}>
-				<Flex
-					direction={"column"}
-					height={"100%"}
-					// style={{ justifyContent: "space-between" }}
-				>
+				<Flex direction={"column"} height={"100%"}>
 					{/* Card image inset */}
 					<Inset
 						clip="padding-box"
@@ -71,13 +67,7 @@ function PlaceCard(props: IPlaceCard) {
 
 					{/* Card title */}
 					<Flex justify={"between"}>
-						<Text
-							as="label"
-							size="6"
-							weight="bold"
-							// className={style["card-title"]}
-							color={"yellow"}
-						>
+						<Text as="label" size="6" weight="bold" color={"yellow"}>
 							{placeData.name}
 						</Text>
 

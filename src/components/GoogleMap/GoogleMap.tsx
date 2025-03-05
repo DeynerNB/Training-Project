@@ -252,12 +252,7 @@ function GoogleMap() {
 	return (
 		<>
 			<Box position={"relative"}>
-				<Box
-					as={"div"}
-					height={"100%"}
-					ref={mapDivRef}
-					// aria-description="To add a new place, press A to place a marker in the center of the map"
-				>
+				<Box as={"div"} height={"100%"} ref={mapDivRef}>
 					<Flex justify={"center"} align={"center"} height={"100%"}>
 						<Spinner />
 					</Flex>
