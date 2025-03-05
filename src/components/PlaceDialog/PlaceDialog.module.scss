@@ -1,5 +1,7 @@
 .dialog-container {
     padding: 0 !important;
+
+    position: relative;
 }
 
 .place-image-container {
@@ -34,7 +36,15 @@
 
 .favorite-icon {
     color: #ffbb00;
-    // background-color: #ffbb00;
+}
+
+.background-stamp {
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    width: 200px;
+    z-index: -50;
+    filter: opacity(0.5);
 }
 
 @media only screen and (max-width: 768px) {

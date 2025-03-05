@@ -5,6 +5,7 @@ import {
 	Button,
 	Dialog,
 	Flex,
+	Grid,
 	IconButton,
 	Link,
 	Text,
@@ -132,7 +133,7 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 				</Box>
 
 				{/* Other information */}
-				<Box px={"5"} py={"4"}>
+				<Box px={"5"} py={"4"} position={"relative"} overflow={"hidden"}>
 					<Flex direction={"column"} gap={"2"} style={{ flexGrow: 1 }}>
 						{/* Description */}
 						<Flex justify={"between"}>
@@ -164,16 +165,18 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						) : (
 							<></>
 						)}
-						{placeData.category_ammenities?.map((ammenity) => (
-							<Flex gap={"2"} key={ammenity.label}>
-								<img
-									src={`/icons/${ammenity.icon}.svg`}
-									aria-hidden
-									style={{ display: "inline", filter: "brightness(0)" }}
-								/>
-								<Text as="span">{ammenity.label}</Text>
-							</Flex>
-						))}
+						<Grid columns={"2"}>
+							{placeData.category_ammenities?.map((ammenity) => (
+								<Flex gap={"2"} key={ammenity.label}>
+									<img
+										src={`/icons/${ammenity.icon}.svg`}
+										aria-hidden
+										style={{ display: "inline", filter: "brightness(0)" }}
+									/>
+									<Text as="span">{ammenity.label}</Text>
+								</Flex>
+							))}
+						</Grid>
 
 						{/* Google Maps link */}
 						<Box mt={"2"}>
@@ -181,10 +184,15 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 								target={"_blank"}
 								href={`https://maps.google.com/?q=${placeData.lat},${placeData.lng}`}
 							>
-								I want to go there
+								{"> I want to go there"}
 							</Link>
 						</Box>
 					</Flex>
+					<img
+						src="background-dialog.jpeg"
+						aria-hidden
+						className={style["background-stamp"]}
+					/>
 				</Box>
 			</Dialog.Content>
 		</Dialog.Root>
