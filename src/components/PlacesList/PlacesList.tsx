@@ -45,13 +45,11 @@ function PlacesList() {
 		if (searchActive) {
 			let currentList = [...placesList];
 
-			console.log("selectedFilters: ", selectedFilters);
-
 			// Filter by search
 			if (selectedFilters.searchValue !== "") {
-				currentList = currentList.filter(
-					(place) => place.name === selectedFilters.searchValue,
-				);
+				const pattern = new RegExp(selectedFilters.searchValue, "gi");
+
+				currentList = currentList.filter((place) => pattern.test(place.name));
 			}
 			// Filter by favorite
 			if (selectedFilters.showFavorites) {
@@ -157,7 +155,7 @@ function PlacesList() {
 							left={"3"}
 							style={{ zIndex: 20 }}
 						>
-							<IconButton size={"3"}>
+							<IconButton size={"3"} aria-label="Menu">
 								<HamburgerMenuIcon className="default-icon" />
 							</IconButton>
 						</Box>
@@ -165,7 +163,9 @@ function PlacesList() {
 
 					<Dialog.Content>
 						<Dialog.Title align={"center"}>Saved places</Dialog.Title>
-						<OptionsPanel />
+						<Box>
+							<OptionsPanel />
+						</Box>
 
 						{generateCards({
 							mt: "3",

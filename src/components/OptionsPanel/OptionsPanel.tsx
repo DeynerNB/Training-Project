@@ -84,7 +84,7 @@ function OptionsPanel(props: IOptionsPanel) {
 		<Flex
 			direction={"column"}
 			gap={"3"}
-			display={{ initial: "none", sm: "flex" }}
+			// display={{ initial: "none", sm: "flex" }}
 		>
 			{/* Search filter */}
 			{props.title && (

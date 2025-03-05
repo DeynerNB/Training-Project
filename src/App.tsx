@@ -1,4 +1,4 @@
-import { Grid } from "@radix-ui/themes";
+import { Box, Grid } from "@radix-ui/themes";
 import GoogleMap from "./components/GoogleMap/GoogleMap";
 import OptionPanel from "./components/OptionsPanel/OptionsPanel";
 import PlacesList from "./components/PlacesList/PlacesList";
@@ -26,7 +26,9 @@ function App() {
 						className={`${style.panel} ${style.background}`}
 					>
 						{/* Options panel */}
-						<OptionPanel title="MyMap" />
+						<Box display={{ initial: "none", sm: "block" }}>
+							<OptionPanel title="MyMap" />
+						</Box>
 
 						{/* My places component */}
 						{/* TODO: Set up a button to show the list */}
