@@ -12,7 +12,7 @@ import {
 	TextField,
 } from "@radix-ui/themes";
 import { Accordion } from "radix-ui";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 
 import { FilterContext } from "../../context/FilterContext/FilterContext";
 import {
@@ -35,7 +35,8 @@ function OptionsPanel(props: IOptionsPanel) {
 	const { setSelectedFilters, setSearchActive } = useContext(FilterContext);
 
 	// -- Ref variables
-	const searchInputRef = useRef<HTMLInputElement | null>(null);
+	// const searchInputRef = useRef<HTMLInputElement | null>(null);
+	const [searchInput, setSearchInput] = useState<string>("");
 
 	const switchFavoritePlacesRef = useRef<boolean>(false);
 
@@ -65,7 +66,7 @@ function OptionsPanel(props: IOptionsPanel) {
 	const handleSearch = () => {
 		setSelectedFilters((s) => ({
 			...s,
-			searchValue: searchInputRef.current?.value || "",
+			searchValue: searchInput,
 			showFavorites: switchFavoritePlacesRef.current,
 		}));
 		setSearchActive(true);
@@ -95,8 +96,15 @@ function OptionsPanel(props: IOptionsPanel) {
 			<TextField.Root
 				size={"3"}
 				className={style["search-input"]}
-				ref={searchInputRef}
+				// ref={searchInputRef}
+				value={searchInput}
+				onChange={(e) => setSearchInput(e.target.value)}
 				placeholder="Search"
+				onKeyDown={(event) => {
+					if (event.key === "Enter") {
+						handleSearch();
+					}
+				}}
 			/>
 
 			<Flex gap={"2"} align={"center"}>
