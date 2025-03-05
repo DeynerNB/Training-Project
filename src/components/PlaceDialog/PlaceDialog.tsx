@@ -62,6 +62,9 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 						spaceBetween={50}
 						navigation
 						slidesPerView={1}
+						a11y={{
+							enabled: true,
+						}}
 						onSlideChange={() => console.log("slide change")}
 						onSwiper={(swiper) => console.log(swiper)}
 						style={{ height: "100%" }}
@@ -136,7 +139,11 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 							<Text as="span" weight={"medium"}>
 								About this place:
 							</Text>
-							<Badge size={"3"} style={{ placeSelf: "end" }}>
+							<Badge
+								size={"3"}
+								style={{ placeSelf: "end" }}
+								aria-label={`Type: ${placeData.category_type}`}
+							>
 								{placeData.category_type}
 							</Badge>
 						</Flex>

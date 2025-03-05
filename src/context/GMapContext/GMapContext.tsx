@@ -190,9 +190,9 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 	) => {
 		// Create each pin style
 		const pinDefault = pinDef || createPinElement("#FC4C04");
-		const pinBackground = pinAct || createPinElement("#FBBC04");
+		const pinSelected = pinAct || createPinElement("#ff6977");
 
-		if (!pinDefault || !pinBackground) {
+		if (!pinDefault || !pinSelected) {
 			return;
 		}
 
@@ -220,7 +220,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 		}
 
 		// Update the marker pin and added it to the selected list
-		marker.content = pinBackground.element;
+		marker.content = pinSelected.element;
 		selectedMarkers.current.push(marker);
 	};
 
@@ -248,7 +248,7 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 	const showUserLocation = (coords: ICoordinates) => {
 		if (!userLocationActiveRef.current) {
 			const userPin = createPinElement("#4285F4", "#1159d1", "#1159d1");
-			const userPinAct = createPinElement("#6897e8", "#2c66c7", "#2c66c7");
+			const userPinAct = createPinElement("#82daff", "#2c66c7", "#2c66c7");
 
 			createMarker(
 				{ name: "Your position", lat: coords.lat, lng: coords.lng },
@@ -285,6 +285,12 @@ export const GMapProvider = ({ children }: IGMapProvider) => {
 	// Set the map center position
 	const setMapCenter = (coords: ICoordinates) => {
 		gMap?.panTo(coords);
+
+		const zoomV = gMap?.getZoom();
+
+		if (zoomV && zoomV < 15) {
+			gMap?.setZoom(17);
+		}
 	};
 
 	return (
