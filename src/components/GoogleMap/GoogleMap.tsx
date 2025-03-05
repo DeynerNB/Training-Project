@@ -98,7 +98,6 @@ function GoogleMap() {
 			center: { lat: CR_lat, lng: CR_lng },
 			zoom: 11,
 			mapId: "Mapa Proyecto",
-			// styles: custom_Style,
 			disableDefaultUI: true,
 		});
 
@@ -147,7 +146,9 @@ function GoogleMap() {
 		});
 
 		// Create a directions objects
-		const directionRender = new google.maps.DirectionsRenderer();
+		const directionRender = new google.maps.DirectionsRenderer({
+			suppressMarkers: true,
+		});
 		const directionService = new google.maps.DirectionsService();
 
 		directionRender.setMap(googleMapObj);

@@ -102,20 +102,20 @@ export const mapStyle = [
 		],
 	},
 	{
-		featureType: "road.highway",
-		elementType: "all",
-		stylers: [
-			{
-				visibility: "simplified",
-			},
-		],
-	},
-	{
-		featureType: "road.arterial",
+		featureType: "road",
 		elementType: "labels.icon",
 		stylers: [
 			{
 				visibility: "off",
+			},
+		],
+	},
+	{
+		featureType: "road.highway",
+		elementType: "all",
+		stylers: [
+			{
+				visibility: "shown",
 			},
 		],
 	},
