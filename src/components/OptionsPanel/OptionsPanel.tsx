@@ -108,8 +108,15 @@ function OptionsPanel(props: IOptionsPanel) {
 			/>
 
 			<Flex gap={"2"} align={"center"}>
-				<Switch size={"2"} onCheckedChange={handleToggleFavorite} /> Show
-				favorites
+				<Switch
+					id="switch-favorites"
+					size={"2"}
+					onCheckedChange={handleToggleFavorite}
+					aria-label="Show favorites"
+				/>{" "}
+				<Text htmlFor="switch-favorites" as="label">
+					Show favorites
+				</Text>
 			</Flex>
 
 			{/* Filters accordion */}
