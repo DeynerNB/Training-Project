@@ -114,15 +114,16 @@ function PlacesList() {
 				<Flex
 					p={"3"}
 					height={"100%"}
+					minHeight={"200px"}
 					direction={"column"}
 					justify={"center"}
 					align={"center"}
 					className={style["container-no-places-yet"]}
 				>
-					<Text align={"center"} as={"p"}>
+					<Text align={"center"} as={"p"} weight={"medium"}>
 						There are no places added yet.
 					</Text>
-					<Text align={"center"} as={"p"}>
+					<Text align={"center"} as={"p"} weight={"medium"}>
 						To add one, click the place you want to add on the map.
 					</Text>
 				</Flex>
@@ -148,18 +149,18 @@ function PlacesList() {
 						}
 					}}
 				>
-					<Dialog.Trigger onClick={() => setShowDialogList(true)}>
-						<Box
-							position={"absolute"}
-							top={"3"}
-							left={"3"}
-							style={{ zIndex: 20 }}
-						>
+					<Box
+						position={"absolute"}
+						top={"3"}
+						left={"3"}
+						style={{ zIndex: 20 }}
+					>
+						<Dialog.Trigger onClick={() => setShowDialogList(true)}>
 							<IconButton size={"3"} aria-label="Menu">
 								<HamburgerMenuIcon className="default-icon" />
 							</IconButton>
-						</Box>
-					</Dialog.Trigger>
+						</Dialog.Trigger>
+					</Box>
 
 					<Dialog.Content>
 						<Dialog.Title align={"center"}>Saved places</Dialog.Title>
