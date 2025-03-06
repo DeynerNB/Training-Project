@@ -25,7 +25,13 @@ import DialogForm from "../Shared/DialogForm/DialogForm";
 
 import { Toast } from "radix-ui";
 import { mapStyle } from "./GoogleMap.interface";
+
+import {
+	faLocationArrow,
+	faLocationCrosshairs,
+} from "@fortawesome/free-solid-svg-icons";
 // -- Styles import
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "./GoogleMap.module.scss";
 
 function GoogleMap() {
@@ -264,20 +270,14 @@ function GoogleMap() {
 						onClick={handleDistanceCalculation}
 						aria-label="Calculate route between two points"
 					>
-						{/* <RulerHorizontalIcon className="default-icon" /> */}
-						<span className="material-symbols-outlined" aria-hidden>
-							navigation
-						</span>
+						<FontAwesomeIcon size={"lg"} icon={faLocationArrow} />
 					</IconButton>
 					<IconButton
 						size={"3"}
 						onClick={handleMyLocation}
 						aria-label="Set my location in the map"
 					>
-						{/* <Crosshair2Icon className="default-icon" /> */}
-						<span className="material-symbols-outlined" aria-hidden>
-							my_location
-						</span>
+						<FontAwesomeIcon size={"lg"} icon={faLocationCrosshairs} />
 					</IconButton>
 				</Flex>
 
