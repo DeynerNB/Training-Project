@@ -7,6 +7,19 @@
     color: var(--accent-10);
 
     z-index: 50;
+    bottom: 10px;
+
+    animation: distance-panel-popUp 0.5s;
+}
+
+@keyframes distance-panel-popUp {
+    from {
+        bottom: -80px;
+    }
+
+    to {
+        bottom: 10px
+    }
 }
 
 // -- Toast styles from:

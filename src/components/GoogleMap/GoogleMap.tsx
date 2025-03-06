@@ -211,6 +211,7 @@ function GoogleMap() {
 				setShowAlert(false);
 			}, 2000);
 
+			setShowDistancePanel(false);
 			console.error("No markers are selected");
 			return;
 		}
@@ -231,7 +232,6 @@ function GoogleMap() {
 		};
 
 		setShowDistancePanel(true);
-
 		directionServiceRef.current.route(request, (result, status) => {
 			let content = "";
 			if (status === "OK" && result) {
@@ -240,7 +240,7 @@ function GoogleMap() {
 				const { distance, duration } = result.routes[0].legs[0];
 
 				if (directionPanelRef.current) {
-					content = `
+					content = `	
 					<p>Distance: ${distance?.text}</p>
 					<p>Duration: ${duration?.text}</p>
 					`;
@@ -284,7 +284,6 @@ function GoogleMap() {
 				{showDistancePanel ? (
 					<Box
 						position={"absolute"}
-						bottom={"2"}
 						left={"2"}
 						p={"2"}
 						ref={directionPanelRef}
