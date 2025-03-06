@@ -59,7 +59,10 @@ function PlaceCard(props: IPlaceCard) {
 
 					{placeData.isFavorite ? (
 						<Box position={"absolute"} top={"3"} right={"3"}>
-							<HeartFilledIcon className="default-icon favorite-icon" />
+							<HeartFilledIcon
+								className="default-icon favorite-icon"
+								aria-description="Place is set as favorite"
+							/>
 						</Box>
 					) : (
 						<></>

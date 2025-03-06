@@ -21,6 +21,7 @@ import type { IPlaceData } from "../../../interfaces/Places.interface";
 import type { Inputs } from "./DialogForm.interface";
 import type { IDialogForm } from "./DialogForm.interface";
 
+import { v4 as uuid4 } from "uuid";
 // Utils imports
 import {
 	E_Budget,
@@ -327,7 +328,7 @@ function DialogForm({ coords, openPlaceForm, setOpenPlaceForm }: IDialogForm) {
 								gap={"2"}
 							>
 								{placeImagesURLs.map((url: string) => (
-									<Box key={Math.random().toString()} position={"relative"}>
+									<Box key={uuid4()} position={"relative"}>
 										<img
 											style={{ height: "100%", objectFit: "cover" }}
 											src={url}

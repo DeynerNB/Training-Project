@@ -16,10 +16,11 @@ import defaultPlaceImage from "../../assets/DefaultPlaceImage.jpg";
 import { GMapContext } from "../../context/GMapContext/GMapContext";
 import type { IPlaceDialogProps } from "./PlaceDialog.interface";
 
+import { v4 as uuid4 } from "uuid";
 import style from "./PlaceDialog.module.scss";
 
-import { Navigation } from "swiper/modules";
 // Import Swiper React components
+import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 
@@ -60,19 +61,24 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 				>
 					<Swiper
 						modules={[Navigation]}
+						loop={true}
 						spaceBetween={50}
 						navigation
 						slidesPerView={1}
+						keyboard={true}
 						a11y={{
-							enabled: true,
+							containerMessage: "Place image sider",
+							nextSlideMessage: "Button for the next slide",
+							prevSlideMessage: "Button for the previous slide",
+							slideRole: "group",
+							itemRoleDescriptionMessage: "Slide group",
+							// enabled: true,
 						}}
-						onSlideChange={() => console.log("slide change")}
-						onSwiper={(swiper) => console.log(swiper)}
 						style={{ height: "100%" }}
 					>
 						{placeData.images && placeData.images.length > 0 ? (
 							placeData.images?.map((imageUrl) => (
-								<SwiperSlide key={Math.random()}>
+								<SwiperSlide key={uuid4()}>
 									<img
 										className={style["place-image"]}
 										src={imageUrl}
@@ -184,7 +190,8 @@ function PlaceDialog({ placeData }: IPlaceDialogProps) {
 								target={"_blank"}
 								href={`https://maps.google.com/?q=${placeData.lat},${placeData.lng}`}
 							>
-								{"> I want to go there"}
+								<span aria-hidden>{">"}</span>
+								{" I want to go there"}
 							</Link>
 						</Box>
 					</Flex>
